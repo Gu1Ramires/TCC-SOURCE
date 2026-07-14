@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOURCE — Quebrada & Realeza</title>
+  <meta name="description" content="SOURCE — e-commerce autoral D2C que une streetwear urbano e alfaiataria minimalista.">
+
+  <!-- Fontes: Urbanist (Quebrada) e Playfair Display (Realeza) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============================================
+       HEADER
+       Fixo, com logo central e ícones de ação.
+       Muda de identidade visual via CSS (variáveis)
+       conforme a classe aplicada no <body>.
+  ============================================= -->
+  <header class="header" id="site-header">
+    <div class="header__inner">
+
+      <!-- Ícone de menu (mobile) -->
+      <button class="icon-btn icon-btn--menu" aria-label="Abrir menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+
+      <!-- Logo -->
+      <a href="/" class="logo" aria-label="SOURCE — página inicial">
+        SOURCE
+      </a>
+
+      <!-- Ações do usuário -->
+      <nav class="header__actions" aria-label="Ações da conta">
+        <button class="icon-btn" aria-label="Buscar produtos">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+
+        <button class="icon-btn" aria-label="Minha conta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </button>
+
+        <button class="icon-btn icon-btn--cart" aria-label="Carrinho de compras">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <!-- Contador do carrinho: será atualizado via JS + LocalStorage futuramente -->
+          <span class="cart-count" id="cart-count">0</span>
+        </button>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- ============================================
+       HERO — FOTO DUPLA (DUALITY)
+       Começa sempre mostrando a foto com os dois universos
+       (Quebrada à esquerda / Realeza à direita). Ao clicar em um
+       lado, a foto e o texto fazem crossfade para o modo escolhido,
+       e esse modo passa a comandar o tema visual do resto do site.
+  ============================================= -->
+  <main>
+    <section class="hero" id="hero" aria-label="Escolha sua identidade SOURCE">
+
+      <!-- ----------------------------------------------------------------
+           CAMADAS DE FUNDO PARA O ESTADO "ESCOLHIDO" (foto única, full-bleed)
+           Ficam invisíveis (opacity:0) enquanto o Hero está em duality.
+           TROCA FUTURA: substitua os backgrounds de placeholder abaixo
+           (definidos em style.css) pelas fotos reais da campanha:
+             #bg-quebrada → foto do modelo 100% streetwear/rua
+             #bg-realeza  → foto do modelo 100% alfaiataria
+      ----------------------------------------------------------------- -->
+      <div class="hero__bg" aria-hidden="true">
+        <div class="hero__bg-layer hero__bg-layer--quebrada" id="bg-quebrada"></div>
+        <div class="hero__bg-layer hero__bg-layer--realeza"  id="bg-realeza"></div>
+        <div class="hero__bg-scrim"></div>
+      </div>
+
+      <!-- ----------------------------------------------------------------
+           ZONAS DE DUALITY (estado inicial)
+           Cada zona É a própria imagem/cor daquele lado — não é uma
+           camada invisível por cima de uma foto única. Ao passar o
+           mouse, a zona cresce (flex-grow) e a logo se realça, dando
+           a sensação de "esse lado está tomando conta da tela".
+           TROCA FUTURA: troque os gradientes de placeholder em
+           .hero__zone--quebrada / .hero__zone--realeza (no style.css)
+           pelas fotos reais de cada lado da imagem de duality.
+      ----------------------------------------------------------------- -->
+      <div class="hero__zones" id="hero-zones">
+        <button class="hero__zone hero__zone--quebrada" data-mode="quebrada" aria-label="Escolher o estilo Quebrada">
+          <span class="hero__zone-icon" aria-hidden="true">
+            <!-- ícone "rostinho" (placeholder simples em SVG) -->
+            <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M8 8 L32 32 M32 8 L8 32" stroke-linecap="round"></path>
+              <circle cx="20" cy="20" r="17"></circle>
+            </svg>
+          </span>
+        </button>
+
+        <button class="hero__zone hero__zone--realeza" data-mode="realeza" aria-label="Escolher o estilo Realeza">
+          <span class="hero__zone-icon" aria-hidden="true">
+            <!-- ícone "coroa" (placeholder simples em SVG) -->
+            <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M6 28 L9 14 L16 21 L20 10 L24 21 L31 14 L34 28 Z" stroke-linejoin="round"></path>
+              <line x1="6" y1="32" x2="34" y2="32" stroke-linecap="round"></line>
+            </svg>
+          </span>
+        </button>
+      </div>
+
+      <!-- ----------------------------------------------------------------
+           CONTEÚDO DE TEXTO
+           Muda completamente conforme o estado (pré-escolha / escolhido),
+           atualizado via JS a partir do objeto CONTEUDO_HERO em app.js.
+      ----------------------------------------------------------------- -->
+      <div class="hero__content" id="hero-content">
+        <p class="hero__pretitle" id="hero-pretitle">Você quem decide o seu estilo</p>
+        <h1 class="hero__headline" id="hero-headline">Escolha seu lado</h1>
+        <p class="hero__sub" id="hero-sub"></p>
+        <button class="hero__cta-btn" id="hero-cta" hidden>Explorar coleção</button>
+      </div>
+
+    </section>
+
+    <!-- Seção seguinte de exemplo, para demonstrar o tema global já aplicado por horário -->
+    <section class="intro">
+      <p class="intro__text">
+        O restante do site já nasce no tema certo para o seu horário — de dia, Realeza;
+        de noite, Quebrada. A foto acima, porém, só muda quando você escolhe um lado.
+      </p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
