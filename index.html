@@ -1,4 +1,4 @@
-a<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -17,9 +17,10 @@ a<!DOCTYPE html>
 
   <!-- ============================================
        HEADER
-       Fixo, com logo central e ícones de ação.
-       Muda de identidade visual via CSS (variáveis)
-       conforme a classe aplicada no <body>.
+       Mesmo padrão usado em todas as páginas da loja
+       (busca + perfil + carrinho + categorias). Muda de
+       identidade visual via CSS (variáveis) conforme a
+       classe aplicada no <body>.
   ============================================= -->
   <header class="header" id="site-header">
     <div class="header__inner">
@@ -36,21 +37,24 @@ a<!DOCTYPE html>
         SOURCE
       </a>
 
-      <!-- Ações do usuário -->
-      <nav class="header__actions" aria-label="Ações da conta">
-        <button class="icon-btn" aria-label="Buscar produtos">
+      <form class="header__search" role="search" action="produtos.html" method="get">
+        <input type="search" name="busca" class="header__search-input" placeholder="Buscar produtos" aria-label="Buscar produtos">
+        <button type="submit" class="header__search-btn" aria-label="Buscar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <circle cx="11" cy="11" r="7"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
         </button>
+      </form>
 
-        <button class="icon-btn" aria-label="Minha conta">
+      <!-- Ações do usuário -->
+      <nav class="header__actions" aria-label="Ações da conta">
+        <a href="login.html" class="icon-btn" aria-label="Entrar ou criar conta">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
           </svg>
-        </button>
+        </a>
 
         <button class="icon-btn icon-btn--cart" aria-label="Carrinho de compras">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -64,6 +68,13 @@ a<!DOCTYPE html>
       </nav>
 
     </div>
+
+    <nav class="header__categories" aria-label="Categorias de produtos">
+      <a href="produtos.html?cat=novidades">NOVIDADES</a>
+      <a href="produtos.html?cat=sale">SALE</a>
+      <a href="contato.html">CONTATOS</a>
+      <a href="produtos.html?cat=collabs">COLLABS</a>
+    </nav>
   </header>
 
   <!-- ============================================
