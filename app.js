@@ -149,14 +149,97 @@ function configurarAuth() {
   document.getElementById('auth-toggle-btn').addEventListener('click', alternarModoAuth);
   document.getElementById('auth-toggle-link').addEventListener('click', alternarModoAuth);
 
-  document.getElementById('auth-form').addEventListener('submit', (evento) => {
-    evento.preventDefault();
+  document.getElementById('auth-form').addEventListener('submit', tratarSubmitAuth);
+}
 
-    // Espaço reservado para a futura integração com Supabase:
-    //   - modo 'login'    → supabase.auth.signInWithPassword(...)
-    //   - modo 'cadastro' → supabase.auth.signUp(...)
-    console.log(`Formulário de ${modoAuthAtual} enviado (integração com Supabase entra aqui).`);
-  });
+/* ------------------------------------------------------------------
+   "BANCO DE DADOS" FICTÍCIO (LocalStorage)
+   Enquanto o Supabase não entra, simulamos contas de usuário salvas
+   no navegador. Isso já deixa o fluxo de Cadastro → Login → Redirect
+   funcionando de verdade, e facilita a troca futura: quando o
+   Supabase entrar, só substituímos o CONTEÚDO destas duas funções
+   (obterContas / salvarConta) por chamadas reais à API — o resto
+   do fluxo (validação, alertas, redirecionamento) continua igual.
+
+   ATENÇÃO: isso é só para fins de demonstração do TCC. Nunca se
+   guarda senha em texto puro num banco de dados real — o Supabase
+   Auth cuida do hash de senha por trás dos panos.
+------------------------------------------------------------------- */
+const CHAVE_CONTAS_FICTICIAS = 'source_contas_ficticias';
+
+function obterContasFicticias() {
+  const dados = localStorage.getItem(CHAVE_CONTAS_FICTICIAS);
+  return dados ? JSON.parse(dados) : [];
+}
+
+function salvarContaFicticia(conta) {
+  const contas = obterContasFicticias();
+  contas.push(conta);
+  localStorage.setItem(CHAVE_CONTAS_FICTICIAS, JSON.stringify(contas));
+}
+
+function contaExiste(email) {
+  return obterContasFicticias().some((conta) => conta.email === email);
+}
+
+function autenticarConta(email, senha) {
+  return obterContasFicticias().some(
+    (conta) => conta.email === email && conta.senha === senha
+  );
+}
+
+/* ------------------------------------------------------------------
+   SUBMIT DO FORMULÁRIO (Login ou Cadastro, dependendo do modo atual)
+------------------------------------------------------------------- */
+function tratarSubmitAuth(evento) {
+  evento.preventDefault();
+
+  const email = document.getElementById('auth-email').value.trim();
+  const senha = document.getElementById('auth-password').value;
+  const confirmarSenha = document.getElementById('auth-confirm-password').value;
+
+  // Validação de campos obrigatórios (comum aos dois modos)
+  if (!email || !senha) {
+    alert('Preencha os campos obrigatórios para continuar.');
+    return;
+  }
+
+  if (modoAuthAtual === 'cadastro') {
+    if (!confirmarSenha) {
+      alert('Preencha os campos obrigatórios para continuar.');
+      return;
+    }
+
+    if (senha !== confirmarSenha) {
+      alert('As senhas não coincidem. Confira e tente novamente.');
+      return;
+    }
+
+    if (contaExiste(email)) {
+      alert('Já existe uma conta cadastrada com este e-mail. Faça login para continuar.');
+      return;
+    }
+
+    salvarContaFicticia({ email, senha });
+    alert('Sua conta foi criada com sucesso! Faça login para continuar.');
+
+    document.getElementById('auth-form').reset();
+    alternarModoAuth(); // volta pro modo login, já pronto pra ele entrar
+
+  } else {
+    if (!contaExiste(email)) {
+      alert('Você ainda não tem uma conta. Cadastre-se para continuar.');
+      return;
+    }
+
+    if (!autenticarConta(email, senha)) {
+      alert('E-mail ou senha incorretos. Tente novamente.');
+      return;
+    }
+
+    alert('Login realizado com sucesso!');
+    window.location.href = 'index.html';
+  }
 }
 
 document.addEventListener('DOMContentLoaded', iniciarApp);
