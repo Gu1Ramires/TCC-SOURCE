@@ -92,6 +92,71 @@ function iniciarApp() {
   definirTemaGlobalPorHorario();
 
   configurarZonasDoHero();
+  configurarAuth();
+}
+
+/* ==================================================================
+   TELA DE AUTENTICAÇÃO (Login / Cadastro)
+
+   O card de autenticação alterna entre dois modos sem trocar de
+   página: 'login' (padrão) e 'cadastro'. Cada modo tem seu próprio
+   texto de botão e divisor, centralizados no objeto CONTEUDO_AUTH —
+   mesmo padrão usado no CONTEUDO_HERO, pra manter a lógica consistente.
+
+   Esses elementos só existem no login.html, então toda função aqui
+   verifica se o elemento existe antes de mexer nele — assim o mesmo
+   app.js pode ser usado em qualquer página do site sem quebrar.
+================================================================== */
+
+const CONTEUDO_AUTH = {
+  login: {
+    submitLabel: 'Entrar',
+    dividerText: 'Não tem uma conta?',
+    dividerLinkText: 'Crie uma aqui',
+    toggleBtnLabel: 'Cadastrar-se',
+    mostrarConfirmarSenha: false,
+  },
+  cadastro: {
+    submitLabel: 'Criar Conta',
+    dividerText: 'Já tem uma conta?',
+    dividerLinkText: 'Entrar',
+    toggleBtnLabel: 'Entrar',
+    mostrarConfirmarSenha: true,
+  },
+};
+
+let modoAuthAtual = 'login';
+
+function atualizarUIAuth() {
+  const conteudo = CONTEUDO_AUTH[modoAuthAtual];
+
+  document.getElementById('auth-submit-btn').textContent = conteudo.submitLabel;
+  document.getElementById('auth-divider-text').textContent = conteudo.dividerText;
+  document.getElementById('auth-toggle-link').textContent = conteudo.dividerLinkText;
+  document.getElementById('auth-toggle-btn').textContent = conteudo.toggleBtnLabel;
+  document.getElementById('auth-confirm-password').hidden = !conteudo.mostrarConfirmarSenha;
+}
+
+function alternarModoAuth() {
+  modoAuthAtual = modoAuthAtual === 'login' ? 'cadastro' : 'login';
+  atualizarUIAuth();
+}
+
+function configurarAuth() {
+  const authCard = document.getElementById('auth-card');
+  if (!authCard) return; // esta página não tem card de autenticação
+
+  document.getElementById('auth-toggle-btn').addEventListener('click', alternarModoAuth);
+  document.getElementById('auth-toggle-link').addEventListener('click', alternarModoAuth);
+
+  document.getElementById('auth-form').addEventListener('submit', (evento) => {
+    evento.preventDefault();
+
+    // Espaço reservado para a futura integração com Supabase:
+    //   - modo 'login'    → supabase.auth.signInWithPassword(...)
+    //   - modo 'cadastro' → supabase.auth.signUp(...)
+    console.log(`Formulário de ${modoAuthAtual} enviado (integração com Supabase entra aqui).`);
+  });
 }
 
 document.addEventListener('DOMContentLoaded', iniciarApp);
