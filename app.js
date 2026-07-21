@@ -6,8 +6,11 @@
 
    1. TEMA GLOBAL (paleta/fonte do site inteiro — header, seções, footer)
       → controlado pela classe no <body>: 'modo-quebrada' / 'modo-realeza'
-      → definido automaticamente pelo HORÁRIO assim que a página carrega,
-        já que o site nunca pode ficar "sem cor" para o cliente.
+      → na primeira visita, definido automaticamente pelo HORÁRIO, já que
+        o site nunca pode ficar "sem cor" para o cliente.
+      → a partir do momento em que o cliente escolhe um lado no Hero
+        (em qualquer página), essa escolha é salva no LocalStorage e
+        passa a valer em TODAS as páginas, sobrescrevendo o horário.
 
    2. ESTADO DO HERO (a foto e o texto da primeira dobra)
       → controlado por uma classe no #hero: 'hero--duality' (padrão),
@@ -49,10 +52,43 @@ function aplicarModoGlobal(modo) {
   document.body.classList.add(modo);
 }
 
-function definirTemaGlobalPorHorario() {
+/* ------------------------------------------------------------------
+   PERSISTÊNCIA DO TEMA ESCOLHIDO (LocalStorage)
+
+   Antes, cada página recalculava o tema do zero pelo horário — então
+   se o cliente escolhesse "Realeza" na home e clicasse no ícone de
+   perfil, a tela de login "esquecia" a escolha e voltava pro horário.
+
+   Agora: assim que o cliente escolhe um lado no Hero, guardamos essa
+   escolha no navegador. TODA página, ao carregar, primeiro pergunta
+   "o cliente já escolheu um tema antes?" — só cai no cálculo por
+   horário se a resposta for não (ou seja, na primeira visita).
+------------------------------------------------------------------- */
+const CHAVE_TEMA_ESCOLHIDO = 'source_tema_escolhido';
+
+function salvarTemaEscolhido(modo) {
+  localStorage.setItem(CHAVE_TEMA_ESCOLHIDO, modo);
+}
+
+function obterTemaEscolhido() {
+  return localStorage.getItem(CHAVE_TEMA_ESCOLHIDO);
+}
+
+function calcularTemaPorHorario() {
   const horaAtual = new Date().getHours();
   const eDiurno = horaAtual >= 6 && horaAtual < 18;
-  const modo = eDiurno ? MODOS.REALEZA : MODOS.QUEBRADA;
+  return eDiurno ? MODOS.REALEZA : MODOS.QUEBRADA;
+}
+
+/**
+ * Decide o tema global ao carregar QUALQUER página:
+ *  1. Se o cliente já escolheu um lado antes (em qualquer página),
+ *     usa essa escolha salva — ela tem prioridade.
+ *  2. Caso contrário (primeira visita), calcula pelo horário.
+ */
+function aplicarTemaInicial() {
+  const temaSalvo = obterTemaEscolhido();
+  const modo = temaSalvo || calcularTemaPorHorario();
   aplicarModoGlobal(modo);
 }
 
@@ -78,6 +114,7 @@ function escolherLadoHero(lado) {
 
   const modoGlobal = lado === 'quebrada' ? MODOS.QUEBRADA : MODOS.REALEZA;
   aplicarModoGlobal(modoGlobal);
+  salvarTemaEscolhido(modoGlobal); // agora essa escolha "viaja" com o cliente pelo site
 }
 
 function configurarZonasDoHero() {
@@ -89,7 +126,7 @@ function configurarZonasDoHero() {
 }
 
 function iniciarApp() {
-  definirTemaGlobalPorHorario();
+  aplicarTemaInicial();
 
   configurarZonasDoHero();
   configurarAuth();
