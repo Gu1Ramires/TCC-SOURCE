@@ -785,6 +785,33 @@ body.modo-realeza .auth-input {
   transform: scale(1.03);
 }
 
+/* Selo de identidade (Quebrada/Realeza). Cores fixas de propósito —
+   mostram a identidade REAL do produto, independente do tema que o
+   site está exibindo no momento pro cliente. */
+.product-card__lado {
+  position: absolute;
+  top: 0.7rem;
+  left: 0.7rem;
+  z-index: 1;
+  padding: 0.3rem 0.65rem;
+  border-radius: 50px;
+  font-family: var(--font-principal);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.product-card__lado--quebrada {
+  background-color: #050505;
+  color: #D4FF3D;
+}
+
+.product-card__lado--realeza {
+  background-color: #F5F5F5;
+  color: #7A1F2B;
+}
+
 .product-card__info {
   display: flex;
   flex-direction: column;

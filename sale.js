@@ -19,6 +19,7 @@ const PRODUTOS = [
   {
     id: 'p1',
     tipo: 'camiseta',
+    lado: 'quebrada',
     colecao: 'Drop 1',
     nome: 'Camiseta Max Style',
     preco: 180.0,
@@ -29,6 +30,7 @@ const PRODUTOS = [
   {
     id: 'p2',
     tipo: 'camiseta',
+    lado: 'quebrada',
     colecao: 'Drop 1',
     nome: 'Camiseta Max Style',
     preco: 180.0,
@@ -39,6 +41,7 @@ const PRODUTOS = [
   {
     id: 'p3',
     tipo: 'camiseta',
+    lado: 'realeza',
     colecao: 'Drop 1',
     nome: 'Camiseta Max Style',
     preco: 180.0,
@@ -49,6 +52,7 @@ const PRODUTOS = [
   {
     id: 'p4',
     tipo: 'camiseta',
+    lado: 'realeza',
     colecao: 'Drop 1',
     nome: 'Camiseta Max Style',
     preco: 180.0,
@@ -59,6 +63,7 @@ const PRODUTOS = [
   {
     id: 'p5',
     tipo: 'moletom',
+    lado: 'quebrada',
     colecao: 'Drop 1',
     nome: 'Moletom Oversized Street',
     preco: 320.0,
@@ -67,8 +72,20 @@ const PRODUTOS = [
     tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
   },
   {
+    id: 'p7',
+    tipo: 'moletom',
+    lado: 'realeza',
+    colecao: 'Drop 1',
+    nome: 'Moletom Alfaiataria Premium',
+    preco: 340.0,
+    corPrincipal: '#f2ede2',
+    coresDisponiveis: ['#f2ede2', '#7a1f2b'],
+    tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+  },
+  {
     id: 'p6',
     tipo: 'calca',
+    lado: 'quebrada',
     colecao: 'Drop 1',
     nome: 'Calça Cargo Street',
     preco: 280.0,
@@ -130,6 +147,22 @@ function criarIconeProduto(tipo, cor) {
   return icones[tipo] || icones.camiseta;
 }
 
+/* ------------------------------------------------------------------
+   IDENTIDADE VISUAL (Quebrada / Realeza)
+   Cada produto pertence a um dos dois lados da marca. Isso é
+   independente do tema que o site está mostrando no momento — o
+   selinho do card sempre mostra a identidade REAL daquele produto,
+   mesmo que o cliente esteja navegando no tema oposto.
+------------------------------------------------------------------- */
+const NOMES_LADO = {
+  quebrada: 'Quebrada',
+  realeza: 'Realeza',
+};
+
+function criarSeloLado(lado) {
+  return `<span class="product-card__lado product-card__lado--${lado}">${NOMES_LADO[lado]}</span>`;
+}
+
 /**
  * Monta o HTML de um único card de produto.
  */
@@ -141,6 +174,7 @@ function criarCardProduto(produto) {
   return `
     <article class="product-card">
       <div class="product-card__image-wrapper" role="img" aria-label="${produto.nome}">
+        ${criarSeloLado(produto.lado)}
         ${criarIconeProduto(produto.tipo, produto.corPrincipal)}
       </div>
       <div class="product-card__info">
@@ -176,6 +210,7 @@ function renderizarProdutos(lista) {
  */
 function aplicarFiltrosEOrdenacao() {
   const filtroCategoria = document.getElementById('catalog-filter-categoria');
+  const filtroLado = document.getElementById('catalog-filter-lado');
   const ordenacao = document.getElementById('catalog-sort');
 
   let lista = obterProdutos();
@@ -183,6 +218,11 @@ function aplicarFiltrosEOrdenacao() {
   const categoriaEscolhida = filtroCategoria ? filtroCategoria.value : 'todos';
   if (categoriaEscolhida !== 'todos') {
     lista = lista.filter((produto) => produto.tipo === categoriaEscolhida);
+  }
+
+  const ladoEscolhido = filtroLado ? filtroLado.value : 'todos';
+  if (ladoEscolhido !== 'todos') {
+    lista = lista.filter((produto) => produto.lado === ladoEscolhido);
   }
 
   const criterioOrdenacao = ordenacao ? ordenacao.value : 'relevancia';
@@ -202,9 +242,11 @@ function configurarCatalogo() {
   aplicarFiltrosEOrdenacao(); // renderização inicial
 
   const filtroCategoria = document.getElementById('catalog-filter-categoria');
+  const filtroLado = document.getElementById('catalog-filter-lado');
   const ordenacao = document.getElementById('catalog-sort');
 
   if (filtroCategoria) filtroCategoria.addEventListener('change', aplicarFiltrosEOrdenacao);
+  if (filtroLado) filtroLado.addEventListener('change', aplicarFiltrosEOrdenacao);
   if (ordenacao) ordenacao.addEventListener('change', aplicarFiltrosEOrdenacao);
 }
 
