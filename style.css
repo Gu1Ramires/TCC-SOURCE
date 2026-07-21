@@ -807,17 +807,34 @@ body.modo-realeza .auth-input {
   color: var(--text-muted, var(--text));
 }
 
-.product-card__swatches {
-  display: flex;
-  gap: 0.4rem;
-  margin-top: 0.15rem;
+.product-card__installment {
+  font-family: var(--font-principal);
+  font-size: 0.72rem;
+  color: var(--text-muted, var(--text));
+  opacity: 0.8;
+  margin-top: -0.15rem;
 }
 
-.product-card__swatch {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
+.product-card__sizes {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+
+.product-card__size {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 26px;
+  padding: 0 0.4rem;
+  border-radius: 8px;
   border: 1px solid var(--border);
+  font-family: var(--font-principal);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text);
+  background-color: transparent;
 }
 
 /* ==================================================================

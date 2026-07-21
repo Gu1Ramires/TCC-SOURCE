@@ -24,6 +24,7 @@ const PRODUTOS = [
     preco: 180.0,
     corPrincipal: '#111111',
     coresDisponiveis: ['#111111', '#1c3f8f', '#4a2e1d', '#f2ede2'],
+    tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
   },
   {
     id: 'p2',
@@ -33,6 +34,7 @@ const PRODUTOS = [
     preco: 180.0,
     corPrincipal: '#1c3f8f',
     coresDisponiveis: ['#111111', '#1c3f8f', '#4a2e1d', '#f2ede2'],
+    tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
   },
   {
     id: 'p3',
@@ -42,6 +44,7 @@ const PRODUTOS = [
     preco: 180.0,
     corPrincipal: '#4a2e1d',
     coresDisponiveis: ['#111111', '#1c3f8f', '#4a2e1d', '#f2ede2'],
+    tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
   },
   {
     id: 'p4',
@@ -51,6 +54,7 @@ const PRODUTOS = [
     preco: 180.0,
     corPrincipal: '#f2ede2',
     coresDisponiveis: ['#111111', '#1c3f8f', '#4a2e1d', '#f2ede2'],
+    tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
   },
   {
     id: 'p5',
@@ -60,6 +64,7 @@ const PRODUTOS = [
     preco: 320.0,
     corPrincipal: '#111111',
     coresDisponiveis: ['#111111'],
+    tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
   },
   {
     id: 'p6',
@@ -69,8 +74,23 @@ const PRODUTOS = [
     preco: 280.0,
     corPrincipal: '#111111',
     coresDisponiveis: ['#111111'],
+    tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
   },
 ];
+
+/* ------------------------------------------------------------------
+   PARCELAMENTO
+   Regra simples e fixa por enquanto (3x sem juros). Se um dia cada
+   produto precisar de uma regra diferente, é só criar um campo
+   "parcelas" no próprio objeto do produto e usar ele aqui no lugar
+   da constante.
+------------------------------------------------------------------- */
+const NUMERO_PARCELAS = 3;
+
+function formatarParcelamento(preco) {
+  const valorParcela = preco / NUMERO_PARCELAS;
+  return `ou ${NUMERO_PARCELAS}x de ${formatarPreco(valorParcela)} sem juros`;
+}
 
 /**
  * Simula a busca de produtos (troque pelo Supabase no futuro).
@@ -114,8 +134,8 @@ function criarIconeProduto(tipo, cor) {
  * Monta o HTML de um único card de produto.
  */
 function criarCardProduto(produto) {
-  const swatches = produto.coresDisponiveis
-    .map((cor) => `<span class="product-card__swatch" style="background-color: ${cor};"></span>`)
+  const tamanhos = produto.tamanhosDisponiveis
+    .map((tamanho) => `<span class="product-card__size">${tamanho}</span>`)
     .join('');
 
   return `
@@ -126,7 +146,8 @@ function criarCardProduto(produto) {
       <div class="product-card__info">
         <p class="product-card__title">${produto.colecao} — ${produto.nome}</p>
         <p class="product-card__price">${formatarPreco(produto.preco)}</p>
-        <div class="product-card__swatches" aria-hidden="true">${swatches}</div>
+        <p class="product-card__installment">${formatarParcelamento(produto.preco)}</p>
+        <div class="product-card__sizes" aria-label="Tamanhos disponíveis">${tamanhos}</div>
       </div>
     </article>
   `;
