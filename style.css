@@ -250,6 +250,12 @@ body {
   opacity: 1;
 }
 
+.header__categories-link--ativo {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 /* ==================================================================
    HERO — SPLIT SCREEN
 ================================================================== */
@@ -698,8 +704,143 @@ body.modo-realeza .auth-input {
 }
 
 /* ==================================================================
+   CATÁLOGO / SALE (sale.html)
+================================================================== */
+
+/* -------------------- BARRA DE FILTROS / ORDENAÇÃO -------------------- */
+.catalog-toolbar {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.catalog-toolbar__count {
+  font-family: var(--font-principal);
+  font-size: 0.8rem;
+  color: var(--text-muted, var(--text));
+}
+
+.catalog-toolbar__filters {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.catalog-select {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 0.55rem 1.1rem;
+  font-family: var(--font-principal);
+  font-size: 0.8rem;
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+  transition: background-color var(--transition-tema), border-color var(--transition-tema);
+}
+
+/* -------------------- CONTAINER + GRID -------------------- */
+.catalog-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+/* -------------------- CARD DE PRODUTO -------------------- */
+.product-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.product-card__image-wrapper {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  background-color: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: background-color var(--transition-tema);
+}
+
+.product-card__image-wrapper svg {
+  width: 52%;
+  height: 52%;
+  transition: transform 0.35s ease;
+}
+
+.product-card:hover .product-card__image-wrapper svg {
+  transform: scale(1.03);
+}
+
+.product-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0 0.15rem;
+}
+
+.product-card__title {
+  font-family: var(--font-principal);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.product-card__price {
+  font-family: var(--font-principal);
+  font-size: 0.85rem;
+  color: var(--text-muted, var(--text));
+}
+
+.product-card__swatches {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+}
+
+.product-card__swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+}
+
+/* ==================================================================
    RESPONSIVO
 ================================================================== */
+@media (max-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+
 @media (max-width: 768px) {
   .hero__content {
     padding: 2rem 1.5rem 2.5rem;
