@@ -761,6 +761,8 @@ body.modo-realeza .auth-input {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
 }
 
 .product-card__image-wrapper {
@@ -865,6 +867,432 @@ body.modo-realeza .auth-input {
 }
 
 /* ==================================================================
+   DETALHE DO PRODUTO (produto.html)
+================================================================== */
+.product-detail-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.product-detail {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* -------------------- GALERIA (coluna esquerda) -------------------- */
+.product-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: sticky;
+  top: 100px;
+}
+
+.product-gallery__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.product-gallery__cell {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border: none;
+  border-radius: 12px;
+  background-color: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background-color var(--transition-tema);
+}
+
+.product-gallery__cell-icon {
+  width: 45%;
+  height: 45%;
+  transition: transform 0.3s ease;
+}
+
+.product-gallery__cell:hover .product-gallery__cell-icon {
+  transform: scale(1.06);
+}
+
+.product-gallery__cell--costas .product-gallery__cell-icon {
+  transform: scaleX(-1);
+}
+
+.product-gallery__cell--costas:hover .product-gallery__cell-icon {
+  transform: scaleX(-1) scale(1.06);
+}
+
+.product-gallery__cell--detalhe .product-gallery__cell-icon {
+  width: 75%;
+  height: 75%;
+}
+
+.product-gallery__cell-label {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 0.7rem;
+  font-family: var(--font-principal);
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted, var(--text));
+  opacity: 0.75;
+}
+
+.product-gallery__banner {
+  position: relative;
+  border: none;
+  border-radius: 12px;
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(160deg, var(--surface) 0%, var(--bg) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.product-gallery__banner-icon {
+  width: 30%;
+  height: 30%;
+  transition: transform 0.3s ease;
+}
+
+.product-gallery__banner:hover .product-gallery__banner-icon {
+  transform: scale(1.05);
+}
+
+.product-gallery__banner-label {
+  position: absolute;
+  bottom: 0.8rem;
+  left: 0.9rem;
+  font-family: var(--font-principal);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted, var(--text));
+  opacity: 0.8;
+}
+
+/* -------------------- INFO (coluna direita) -------------------- */
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.product-info__eyebrow {
+  font-family: var(--font-principal);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted, var(--text));
+}
+
+.product-info__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+  font-weight: var(--title-weight, 700);
+  color: var(--text);
+  line-height: 1.25;
+}
+
+.product-info .product-card__lado {
+  align-self: flex-start;
+  position: static;
+}
+
+.product-info__price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-top: 0.3rem;
+}
+
+.product-info__price {
+  font-family: var(--font-principal);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.product-info__installment {
+  font-family: var(--font-principal);
+  font-size: 0.8rem;
+  color: var(--text-muted, var(--text));
+  opacity: 0.85;
+}
+
+.product-info__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.product-info__label {
+  font-family: var(--font-principal);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.product-swatches {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.product-swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 2px;
+  background-clip: content-box;
+  cursor: pointer;
+  outline: 1px solid var(--border);
+  outline-offset: 2px;
+}
+
+.product-swatch.is-selected {
+  border-color: var(--accent);
+}
+
+.product-sizes {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.product-size-btn {
+  min-width: 46px;
+  height: 42px;
+  padding: 0 0.6rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background-color: transparent;
+  color: var(--text);
+  font-family: var(--font-principal);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.product-size-btn.is-selected {
+  background-color: var(--text);
+  color: var(--bg);
+}
+
+.product-info__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.3rem;
+}
+
+.product-info__fav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.product-info__fav-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.product-info__fav-btn.is-selected {
+  background-color: var(--text);
+  color: var(--bg);
+}
+
+.product-info__shipping {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.product-shipping-form {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.product-shipping-form__input {
+  flex: 1;
+}
+
+.product-shipping-result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  background-color: var(--surface);
+  font-family: var(--font-principal);
+  font-size: 0.85rem;
+}
+
+.product-shipping-option {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text);
+}
+
+.product-info__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+.product-info__details details {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+}
+
+.product-info__details summary {
+  font-family: var(--font-principal);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0.4rem 0;
+}
+
+.product-info__details p,
+.product-info__details li {
+  font-family: var(--font-principal);
+  font-size: 0.85rem;
+  color: var(--text-muted, var(--text));
+  line-height: 1.6;
+}
+
+.product-info__details ul {
+  padding-left: 1.1rem;
+}
+
+/* -------------------- ESTADO: PRODUTO NÃO ENCONTRADO -------------------- */
+.product-not-found {
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.product-not-found__title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--text);
+}
+
+.product-not-found__text {
+  font-family: var(--font-principal);
+  font-size: 0.9rem;
+  color: var(--text-muted, var(--text));
+  max-width: 380px;
+}
+
+/* ==================================================================
+   LIGHTBOX (modal de zoom da galeria)
+================================================================== */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* CRÍTICO: sem esta regra, o "display: flex" acima sobrescreve o
+   comportamento padrão do atributo HTML `hidden`, e o modal fica
+   sempre visível na tela — mesmo com hidden="true" no JS. */
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 70vw;
+}
+
+.lightbox__imagem {
+  width: min(50vw, 420px);
+  height: min(50vw, 420px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox__imagem svg {
+  width: 100%;
+  height: 100%;
+}
+
+.lightbox__legenda {
+  font-family: var(--font-principal);
+  font-size: 0.85rem;
+  color: #EDEDED;
+  text-align: center;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.lightbox__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.lightbox__nav--prev {
+  left: 1.5rem;
+}
+
+.lightbox__nav--next {
+  right: 1.5rem;
+}
+
+/* ==================================================================
    RESPONSIVO
 ================================================================== */
 @media (max-width: 1024px) {
@@ -922,6 +1350,25 @@ body.modo-realeza .auth-input {
     flex-direction: column;
     gap: 1rem;
     align-items: flex-start;
+  }
+
+  .product-detail {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .product-gallery {
+    position: static;
+  }
+
+  .lightbox__imagem {
+    width: min(70vw, 320px);
+    height: min(70vw, 320px);
+  }
+
+  .lightbox__nav {
+    width: 40px;
+    height: 40px;
   }
 }
 

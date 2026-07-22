@@ -20,78 +20,106 @@ const PRODUTOS = [
     id: 'p1',
     tipo: 'camiseta',
     lado: 'quebrada',
+    modelagem: 'camiseta-max-style',
     colecao: 'Drop 1',
-    nome: 'Camiseta Max Style',
+    nome: 'Camiseta Boxy Preta',
     preco: 180.0,
     corPrincipal: '#111111',
     coresDisponiveis: ['#111111', '#1c3f8f', '#4a2e1d', '#f2ede2'],
     tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+    descricao: 'Camiseta boxy com caimento reto, tecido encorpado e estampa lateral assinatura SOURCE. Peça-chave do Drop 1, pensada pra transitar entre a rua e o dia a dia sem perder identidade.',
+    destaques: ['Caimento boxy/oversized', 'Estampa lateral em relevo', 'Gola reforçada dupla costura'],
+    especificacoes: { tecido: 'Algodão penteado 30.1', composicao: '100% algodão', caimento: 'Boxy / Oversized' },
   },
   {
     id: 'p2',
     tipo: 'camiseta',
     lado: 'quebrada',
+    modelagem: 'camiseta-max-style',
     colecao: 'Drop 1',
-    nome: 'Camiseta Max Style',
+    nome: 'Camiseta Boxy Azul',
     preco: 180.0,
     corPrincipal: '#1c3f8f',
     coresDisponiveis: ['#111111', '#1c3f8f', '#4a2e1d', '#f2ede2'],
     tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+    descricao: 'Camiseta boxy com caimento reto, tecido encorpado e estampa lateral assinatura SOURCE. Peça-chave do Drop 1, pensada pra transitar entre a rua e o dia a dia sem perder identidade.',
+    destaques: ['Caimento boxy/oversized', 'Estampa lateral em relevo', 'Gola reforçada dupla costura'],
+    especificacoes: { tecido: 'Algodão penteado 30.1', composicao: '100% algodão', caimento: 'Boxy / Oversized' },
   },
   {
     id: 'p3',
     tipo: 'camiseta',
     lado: 'realeza',
+    modelagem: 'camiseta-max-style',
     colecao: 'Drop 1',
-    nome: 'Camiseta Max Style',
+    nome: 'Camiseta Boxy Marrom',
     preco: 180.0,
     corPrincipal: '#4a2e1d',
     coresDisponiveis: ['#111111', '#1c3f8f', '#4a2e1d', '#f2ede2'],
     tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+    descricao: 'Camiseta boxy com caimento reto, tecido encorpado e estampa lateral assinatura SOURCE. Um tom mais sóbrio da mesma modelagem, com pegada Realeza.',
+    destaques: ['Caimento boxy/oversized', 'Estampa lateral em relevo', 'Gola reforçada dupla costura'],
+    especificacoes: { tecido: 'Algodão penteado 30.1', composicao: '100% algodão', caimento: 'Boxy / Oversized' },
   },
   {
     id: 'p4',
     tipo: 'camiseta',
     lado: 'realeza',
+    modelagem: 'camiseta-max-style',
     colecao: 'Drop 1',
-    nome: 'Camiseta Max Style',
+    nome: 'Camiseta Boxy Off-White',
     preco: 180.0,
     corPrincipal: '#f2ede2',
     coresDisponiveis: ['#111111', '#1c3f8f', '#4a2e1d', '#f2ede2'],
     tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+    descricao: 'Camiseta boxy com caimento reto, tecido encorpado e estampa lateral assinatura SOURCE. Tom neutro, versátil, com pegada Realeza.',
+    destaques: ['Caimento boxy/oversized', 'Estampa lateral em relevo', 'Gola reforçada dupla costura'],
+    especificacoes: { tecido: 'Algodão penteado 30.1', composicao: '100% algodão', caimento: 'Boxy / Oversized' },
   },
   {
     id: 'p5',
     tipo: 'moletom',
     lado: 'quebrada',
+    modelagem: 'moletom-oversized-street',
     colecao: 'Drop 1',
     nome: 'Moletom Oversized Street',
     preco: 320.0,
     corPrincipal: '#111111',
     coresDisponiveis: ['#111111'],
     tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+    descricao: 'Moletom oversized em moletinho flanelado, capuz forrado e bolso canguru reforçado. Peça de inverno pensada pra dar volume sem perder o caimento.',
+    destaques: ['Capuz forrado', 'Bolso canguru reforçado', 'Punho e barra em ribana'],
+    especificacoes: { tecido: 'Moletom flanelado 400g', composicao: '80% algodão / 20% poliéster', caimento: 'Oversized' },
   },
   {
     id: 'p7',
     tipo: 'moletom',
     lado: 'realeza',
+    modelagem: 'moletom-alfaiataria-premium',
     colecao: 'Drop 1',
     nome: 'Moletom Alfaiataria Premium',
     preco: 340.0,
     corPrincipal: '#f2ede2',
     coresDisponiveis: ['#f2ede2', '#7a1f2b'],
     tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+    descricao: 'Versão Realeza do moletom, com tecido mais encorpado e acabamento premium — prova de que conforto e alfaiataria minimalista podem conviver na mesma peça.',
+    destaques: ['Acabamento premium', 'Corte reto elegante', 'Tecido de gramatura alta'],
+    especificacoes: { tecido: 'Moletom peruano 450g', composicao: '100% algodão pima', caimento: 'Reto / Alfaiataria' },
   },
   {
     id: 'p6',
     tipo: 'calca',
     lado: 'quebrada',
+    modelagem: 'calca-cargo-street',
     colecao: 'Drop 1',
     nome: 'Calça Cargo Street',
     preco: 280.0,
     corPrincipal: '#111111',
     coresDisponiveis: ['#111111'],
     tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+    descricao: 'Calça cargo com bolsos utilitários e cordão de ajuste na barra. Feita pra rua, com espaço de sobra e caimento reto.',
+    destaques: ['Bolsos cargo laterais', 'Cordão de ajuste na barra', 'Cintura com elástico + cadarço'],
+    especificacoes: { tecido: 'Sarja pesada', composicao: '98% algodão / 2% elastano', caimento: 'Reto / Cargo' },
   },
 ];
 
@@ -165,6 +193,8 @@ function criarSeloLado(lado) {
 
 /**
  * Monta o HTML de um único card de produto.
+ * O card inteiro é um link pra produto.html?id=..., já que qualquer
+ * ponto do card deve levar o cliente pra tela de detalhe daquela peça.
  */
 function criarCardProduto(produto) {
   const tamanhos = produto.tamanhosDisponiveis
@@ -172,7 +202,7 @@ function criarCardProduto(produto) {
     .join('');
 
   return `
-    <article class="product-card">
+    <a class="product-card" href="produto.html?id=${produto.id}">
       <div class="product-card__image-wrapper" role="img" aria-label="${produto.nome}">
         ${criarSeloLado(produto.lado)}
         ${criarIconeProduto(produto.tipo, produto.corPrincipal)}
@@ -183,7 +213,7 @@ function criarCardProduto(produto) {
         <p class="product-card__installment">${formatarParcelamento(produto.preco)}</p>
         <div class="product-card__sizes" aria-label="Tamanhos disponíveis">${tamanhos}</div>
       </div>
-    </article>
+    </a>
   `;
 }
 
