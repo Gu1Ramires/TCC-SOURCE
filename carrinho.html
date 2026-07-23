@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SOURCE — Sale / Catálogo</title>
-  <meta name="description" content="Confira os produtos da coleção SOURCE — Drop 1.">
+  <title>SOURCE — Carrinho</title>
+  <meta name="description" content="Revise seus produtos e finalize sua compra na SOURCE.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,10 +31,6 @@
         </button>
       </form>
 
-<!-- ============================================
-       BOTÃO LOGIN
-  ============================================= -->
-
       <nav class="header__actions" aria-label="Ações da conta">
         <a href="login.html" class="icon-btn" aria-label="Entrar ou criar conta">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -43,18 +39,12 @@
           </svg>
         </a>
 
-        <!-- ============================================
-       BOTÃO CARRINHO 
-  ============================================= -->
-
         <button class="icon-btn icon-btn--cart" aria-label="Carrinho de compras">
-          <a href="carrinho.html" class="icon-btn" aria-label="Entrar em carrinho">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <circle cx="9" cy="21" r="1"></circle>
             <circle cx="20" cy="21" r="1"></circle>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
           </svg>
-          </a>
           <span class="cart-count" id="cart-count">0</span>
         </button>
       </nav>
@@ -62,53 +52,33 @@
 
     <nav class="header__categories" aria-label="Categorias de produtos">
       <a href="novidades.html">NOVIDADES</a>
-      <a href="sale.html" class="header__categories-link--ativo">SALE</a>
+      <a href="sale.html">SALE</a>
       <a href="contato.html">CONTATOS</a>
       <a href="collabs.html">COLLABS</a>
     </nav>
   </header>
 
   <!-- ============================================
-       BARRA DE FILTROS / ORDENAÇÃO
+       BREADCRUMB SIMPLES (mesmo espírito do protótipo)
   ============================================= -->
-  <div class="catalog-toolbar">
-    <p class="catalog-toolbar__count" id="catalog-count">0 produtos</p>
-
-    <div class="catalog-toolbar__filters">
-      <select class="catalog-select" id="catalog-filter-categoria" aria-label="Filtrar por categoria">
-        <option value="todos">Todas as categorias</option>
-        <option value="camiseta">Camisetas</option>
-        <option value="moletom">Moletons</option>
-        <option value="calca">Calças</option>
-      </select>
-
-      <select class="catalog-select" id="catalog-filter-lado" aria-label="Filtrar por identidade">
-        <option value="todos">Quebrada &amp; Realeza</option>
-        <option value="quebrada">Quebrada</option>
-        <option value="realeza">Realeza</option>
-      </select>
-
-      <select class="catalog-select" id="catalog-sort" aria-label="Ordenar produtos">
-        <option value="relevancia">Ordenar por: Relevância</option>
-        <option value="menor-preco">Menor preço</option>
-        <option value="maior-preco">Maior preço</option>
-      </select>
-    </div>
+  <div class="cart-breadcrumb">
+    <span>Início</span> · <span>Sale</span>
   </div>
 
   <!-- ============================================
-       CATÁLOGO DE PRODUTOS
-       O grid é renderizado dinamicamente pelo app.js,
-       a partir do array PRODUTOS (mock hoje, Supabase depois).
+       CARRINHO / CHECKOUT
+       Todo o conteúdo aqui dentro nasce vazio e é montado
+       dinamicamente pelo carrinho.js, a partir do que estiver
+       salvo em LocalStorage (chave 'source_carrinho').
   ============================================= -->
-  <main class="catalog-container">
-    <div class="product-grid" id="product-grid" aria-live="polite">
-      <!-- Cards inseridos via JS -->
+  <main class="cart-page">
+    <div id="cart-container" aria-live="polite">
+      <!-- Conteúdo (card do carrinho OU empty state) inserido via JS -->
     </div>
   </main>
 
   <!-- ============================================
-       FOOTER INSTITUCIONAL (mesmo padrão do login.html)
+       FOOTER INSTITUCIONAL (mesmo padrão das outras páginas)
   ============================================= -->
   <footer class="site-footer">
     <div class="site-footer__grid">
@@ -186,5 +156,6 @@
 
   <script src="app.js"></script>
   <script src="sale.js"></script>
+  <script src="carrinho.js"></script>
 </body>
 </html>

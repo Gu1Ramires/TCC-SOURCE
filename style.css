@@ -1372,6 +1372,403 @@ body.modo-realeza .auth-input {
   }
 }
 
+/* ==================================================================
+   CARRINHO / CHECKOUT (carrinho.html)
+
+   Decisão de design: o card do carrinho é sempre BRANCO/claro,
+   independente do tema global — mesmo raciocínio do .auth-input
+   (legibilidade de formulário/checkout vem antes da identidade
+   visual do momento). Só o restante da página (header, footer,
+   fundo) respeita o tema Quebrada/Realeza normalmente.
+================================================================== */
+.cart-breadcrumb {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem 0;
+  font-family: var(--font-principal);
+  font-size: 0.75rem;
+  color: var(--text-muted, var(--text));
+  opacity: 0.8;
+}
+
+.cart-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 4rem;
+}
+
+.cart-card {
+  background-color: #FFFFFF;
+  color: #17140F;
+  border-radius: 4px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+  padding: 1.75rem 2rem 2.25rem;
+}
+
+/* -------------------- STEPPER -------------------- */
+.cart-stepper {
+  display: flex;
+  gap: 2.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #E4E4E4;
+  margin-bottom: 1.25rem;
+  font-family: var(--font-principal);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #B8B8B8;
+}
+
+.cart-stepper__numero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid #B8B8B8;
+  font-size: 0.75rem;
+  margin-right: 0.4rem;
+}
+
+.cart-stepper__etapa--ativa {
+  color: #17140F;
+}
+
+.cart-stepper__etapa--ativa .cart-stepper__numero {
+  background-color: #17140F;
+  border-color: #17140F;
+  color: #FFFFFF;
+}
+
+/* -------------------- ALERTA -------------------- */
+.cart-alert {
+  background-color: #F5F5F5;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-principal);
+  font-size: 0.8rem;
+  color: #55504A;
+  margin-bottom: 1.5rem;
+}
+
+/* -------------------- TABELA DE PRODUTOS --------------------
+   4ª coluna (auto) reservada pro botão de lixeira, sempre do
+   mesmo tamanho do ícone — não empurra o valor do produto. */
+.cart-table__cabecalho {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  font-family: var(--font-principal);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #9A9A9A;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #E4E4E4;
+}
+
+.cart-table__corpo {
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid #EFEFEF;
+}
+
+.cart-item__produto {
+  display: flex;
+  gap: 1rem;
+}
+
+.cart-item__thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-item__thumb svg {
+  width: 60%;
+  height: 60%;
+}
+
+.cart-item__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.cart-item__nome {
+  font-family: var(--font-principal);
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.cart-item__meta {
+  font-family: var(--font-principal);
+  font-size: 0.75rem;
+  color: #8A8A8A;
+}
+
+.cart-item__quantidade {
+  display: flex;
+  justify-content: center;
+}
+
+.cart-qty {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid #DADADA;
+  border-radius: 50px;
+  padding: 0.3rem 0.6rem;
+}
+
+.cart-qty__btn {
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+  color: #17140F;
+}
+
+.cart-qty__valor {
+  font-family: var(--font-principal);
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-width: 1ch;
+  text-align: center;
+}
+
+.cart-item__valor {
+  text-align: right;
+}
+
+.cart-item__preco {
+  font-family: var(--font-principal);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.cart-item__parcelamento {
+  font-family: var(--font-principal);
+  font-size: 0.72rem;
+  color: #8A8A8A;
+}
+
+/* Botão de lixeira — remove o item da linha (splice + salvarCarrinho) */
+.cart-item__lixeira-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  color: #17140F;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.cart-item__lixeira-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.cart-item__lixeira-btn:hover {
+  background-color: #FDEBEB;
+  color: #C0392B;
+}
+
+/* -------------------- BLOCOS INFERIORES -------------------- */
+.cart-bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+  align-items: start;
+}
+
+.cart-bottom-grid__label {
+  font-family: var(--font-principal);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #9A9A9A;
+  margin-bottom: 0.6rem;
+}
+
+.cart-shipping-form,
+.cart-coupon-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cart-input {
+  flex: 1;
+  min-width: 0;
+  border-radius: 50px;
+  border: 1px solid #DADADA;
+  padding: 0.7rem 1.1rem;
+  font-family: var(--font-principal);
+  font-size: 0.85rem;
+  color: #17140F;
+  outline: none;
+}
+
+.cart-shipping .btn-outline,
+.cart-coupon .btn-outline {
+  border-color: #17140F;
+  color: #17140F;
+  padding: 0.7rem 1.1rem;
+  font-size: 0.8rem;
+}
+
+.cart-shipping .btn-outline:hover,
+.cart-coupon .btn-outline:hover {
+  background-color: #17140F;
+  color: #FFFFFF;
+}
+
+.cart-shipping__resultado,
+.cart-coupon__resultado {
+  margin-top: 0.6rem;
+  font-family: var(--font-principal);
+  font-size: 0.78rem;
+  color: #55504A;
+}
+
+/* -------------------- RESUMO -------------------- */
+.cart-resumo {
+  background-color: #FAFAFA;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.cart-resumo__titulo {
+  font-family: var(--font-principal);
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+}
+
+.cart-resumo__linha {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-principal);
+  font-size: 0.82rem;
+  color: #55504A;
+}
+
+.cart-resumo__desconto {
+  color: #2E8B57;
+  font-weight: 600;
+}
+
+.cart-resumo__linha--total {
+  border-top: 1px solid #E4E4E4;
+  padding-top: 0.6rem;
+  margin-top: 0.2rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #17140F;
+}
+
+.cart-resumo__parcelamento {
+  font-family: var(--font-principal);
+  font-size: 0.72rem;
+  color: #8A8A8A;
+  text-align: right;
+  margin-top: -0.3rem;
+}
+
+.cart-resumo__continuar {
+  margin-top: 0.75rem;
+  background-color: #17140F;
+  color: #FFFFFF;
+  width: 100%;
+  text-align: center;
+}
+
+/* -------------------- ESTADO VAZIO --------------------
+   Fica DENTRO do .cart-card (stepper continua visível por cima),
+   com um retângulo cinza-claro que hospeda a mensagem e o CTA,
+   igual ao protótipo de Figma. */
+.cart-empty {
+  background-color: #F2F2F2;
+  border-radius: 4px;
+  margin-top: 1.25rem;
+  min-height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+
+.cart-empty__title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #17140F;
+}
+
+.cart-empty__text {
+  font-family: var(--font-principal);
+  font-size: 0.85rem;
+  color: #6B6660;
+  max-width: 380px;
+}
+
+.cart-empty__btn {
+  margin-top: 0.5rem;
+  background-color: #17140F;
+  color: #FFFFFF;
+}
+
+/* -------------------- RESPONSIVO -------------------- */
+@media (max-width: 768px) {
+  .cart-item {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "produto lixeira"
+      "quantidade quantidade"
+      "valor valor";
+    gap: 0.75rem;
+  }
+
+  .cart-item__produto { grid-area: produto; }
+  .cart-item__lixeira-btn { grid-area: lixeira; justify-self: flex-end; }
+  .cart-item__quantidade { grid-area: quantidade; justify-content: flex-start; }
+  .cart-item__valor { grid-area: valor; text-align: left; }
+
+  .cart-table__cabecalho {
+    display: none;
+  }
+
+  .cart-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Acessibilidade: respeita preferência de movimento reduzido */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

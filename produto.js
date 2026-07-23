@@ -243,25 +243,27 @@ function configurarEventosDaPagina(produto) {
     });
   });
 
+
+//--------------------------------------------------------------------------------///
   // Adicionar ao carrinho (fictício por enquanto — o carrinho reativo
   // de verdade, com persistência entre páginas, é a próxima etapa
   // planejada do projeto)
-  const botaoCarrinho = document.getElementById('btn-adicionar-carrinho');
+ const botaoCarrinho = document.getElementById('btn-adicionar-carrinho');
   if (botaoCarrinho) {
     botaoCarrinho.addEventListener('click', () => {
       if (!tamanhoSelecionado) {
         alert('Selecione um tamanho antes de adicionar ao carrinho.');
         return;
       }
-      alert(`Adicionado ao carrinho: ${produto.nome} (tamanho ${tamanhoSelecionado})`);
 
-      const contador = document.getElementById('cart-count');
-      if (contador) {
-        contador.textContent = String(Number(contador.textContent) + 1);
-      }
+      adicionarItemAoCarrinho(produto.id, tamanhoSelecionado, 1);
+      alert(`Adicionado ao carrinho: ${produto.nome} (tamanho ${tamanhoSelecionado})`);
     });
   }
+  //---------------------------------------------------------------------------------------//
 
+
+  
   // Favoritar (visual só por enquanto, sem persistência ainda)
   const botaoFavoritar = document.getElementById('btn-favoritar');
   if (botaoFavoritar) {

@@ -127,10 +127,13 @@ function configurarZonasDoHero() {
 
 function iniciarApp() {
   aplicarTemaInicial();
+  atualizarContadorCarrinho();
 
   configurarZonasDoHero();
   configurarAuth();
 }
+
+
 
 /* ==================================================================
    TELA DE AUTENTICAÇÃO (Login / Cadastro)
@@ -277,6 +280,58 @@ function tratarSubmitAuth(evento) {
     alert('Login realizado com sucesso!');
     window.location.href = 'index.html';
   }
+}
+
+
+
+/* ==================================================================
+   CARRINHO DE COMPRAS (LocalStorage)
+   Compartilhado por TODAS as páginas porque o contador do header
+   (#cart-count) aparece em qualquer lugar do site. A lógica de
+   renderizar a TELA do carrinho (carrinho.html) fica isolada em
+   carrinho.js — aqui só cuidamos do dado em si.
+
+   Formato de cada item: { produtoId, tamanho, quantidade }
+================================================================== */
+const CHAVE_CARRINHO = 'source_carrinho';
+
+function obterCarrinho() {
+  const dados = localStorage.getItem(CHAVE_CARRINHO);
+  return dados ? JSON.parse(dados) : [];
+}
+
+function salvarCarrinho(carrinho) {
+  localStorage.setItem(CHAVE_CARRINHO, JSON.stringify(carrinho));
+  atualizarContadorCarrinho(); // mantém o header sempre em dia
+}
+
+function calcularQuantidadeTotalCarrinho() {
+  return obterCarrinho().reduce((total, item) => total + item.quantidade, 0);
+}
+
+function atualizarContadorCarrinho() {
+  const contador = document.getElementById('cart-count');
+  if (!contador) return; // guard clause: nem toda página tem o header completo
+  contador.textContent = String(calcularQuantidadeTotalCarrinho());
+}
+
+/**
+ * Adiciona um item ao carrinho. Se o mesmo produto+tamanho já existir,
+ * soma a quantidade ao invés de duplicar a linha.
+ */
+function adicionarItemAoCarrinho(produtoId, tamanho, quantidade = 1) {
+  const carrinho = obterCarrinho();
+  const itemExistente = carrinho.find(
+    (item) => item.produtoId === produtoId && item.tamanho === tamanho
+  );
+
+  if (itemExistente) {
+    itemExistente.quantidade += quantidade;
+  } else {
+    carrinho.push({ produtoId, tamanho, quantidade });
+  }
+
+  salvarCarrinho(carrinho);
 }
 
 document.addEventListener('DOMContentLoaded', iniciarApp);
