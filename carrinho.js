@@ -3,21 +3,17 @@
    Lógica exclusiva da página de Carrinho/Checkout (carrinho.html).
 
    Depende de funções/dados já carregados por scripts anteriores:
-     - app.js  → obterCarrinho, salvarCarrinho, adicionarItemAoCarrinho
+     - app.js  → obterCarrinho, salvarCarrinho, adicionarItemAoCarrinho,
+                 obterSessaoAtiva, removerSessaoAtiva
      - sale.js → PRODUTOS, formatarPreco, formatarParcelamento,
                  criarIconeProduto, criarSeloLado, NOMES_LADO
 
-   REGRA ARQUITETURAL: assim como produto.js, este arquivo nunca
-   decide cor/fonte — só monta HTML e liga classes. O style.css
-   traduz tudo visualmente.
+   ARQUITETURA DO CHECKOUT: existe UM único card, e o que muda é o
+   CONTEÚDO dentro dele conforme a etapa (etapaAtual: 1, 2 ou 3) —
+   mesmo raciocínio de "uma página só, o estado é que muda" já usado
+   em produto.js com o ?id= da URL.
 ================================================================== */
 
-/* ------------------------------------------------------------------
-   CUPONS (mock)
-   Igual ao mock de PRODUTOS em sale.js: hoje é um objeto fixo,
-   amanhã vira uma consulta ao Supabase (tabela "cupons"), sem
-   precisar reescrever a lógica de aplicação/cálculo abaixo.
-------------------------------------------------------------------- */
 const CUPONS_VALIDOS = {
   SOURCE10: 0.10,
   BEMVINDO15: 0.15,
@@ -26,15 +22,12 @@ const CUPONS_VALIDOS = {
 const VALOR_FRETE_PADRAO = 9.9;
 const PRAZO_FRETE_DIAS = '5 a 8 dias úteis';
 
-let cupomAplicado = null; // string do código, ou null
-let freteCalculado = false; // só entra no total depois do CEP calculado
+let cupomAplicado = null;
+let freteCalculado = false;
+let etapaAtual = 1; // 1 = Carrinho, 2 = Identificação, 3 = Pagamento
 
 /* ------------------------------------------------------------------
    LEITURA DO CARRINHO + DADOS DO PRODUTO
-   O carrinho salvo no LocalStorage só guarda { produtoId, tamanho,
-   quantidade } — aqui cruzamos com o array PRODUTOS (de sale.js)
-   pra ter nome, preço, cor, etc. Produtos removidos do catálogo
-   simplesmente somem da lista (filter), sem quebrar a tela.
 ------------------------------------------------------------------- */
 function obterItensCarrinhoComDados() {
   const carrinho = obterCarrinho();
@@ -62,9 +55,31 @@ function calcularFrete() {
   return freteCalculado ? VALOR_FRETE_PADRAO : 0;
 }
 
+/* ------------------------------------------------------------------
+   STEPPER (compartilhado por todas as etapas)
+------------------------------------------------------------------- */
+function criarStepperHtml(etapaAtiva) {
+  const nomes = ['Carrinho', 'Identificação', 'Pagamento'];
+
+  return `
+    <nav class="cart-stepper" aria-label="Etapas da compra">
+      ${nomes
+        .map((nome, indice) => {
+          const numero = indice + 1;
+          const classeAtiva = numero === etapaAtiva ? 'cart-stepper__etapa--ativa' : '';
+          return `
+            <div class="cart-stepper__etapa ${classeAtiva}">
+              <span class="cart-stepper__numero">${numero}</span> ${nome}
+            </div>
+          `;
+        })
+        .join('')}
+    </nav>
+  `;
+}
 
 /* ------------------------------------------------------------------
-   RENDERIZAÇÃO — LINHA DE PRODUTO
+   RENDERIZAÇÃO — LINHA DE PRODUTO (etapa 1)
 ------------------------------------------------------------------- */
 function criarLinhaProdutoHtml(item, indice) {
   const { produto, tamanho, quantidade } = item;
@@ -110,7 +125,7 @@ function criarLinhaProdutoHtml(item, indice) {
 }
 
 /* ------------------------------------------------------------------
-   RENDERIZAÇÃO — RESUMO DO PEDIDO
+   RENDERIZAÇÃO — RESUMO DO PEDIDO (etapa 1)
 ------------------------------------------------------------------- */
 function criarResumoHtml(itens) {
   const subtotal = calcularSubtotal(itens);
@@ -149,43 +164,14 @@ function criarResumoHtml(itens) {
 }
 
 /* ------------------------------------------------------------------
-   RENDERIZAÇÃO PRINCIPAL
+   ETAPA 1 — CARRINHO
 ------------------------------------------------------------------- */
-function renderizarCarrinho() {
+function renderizarEtapaCarrinho(itens) {
   const container = document.getElementById('cart-container');
-  const itens = obterItensCarrinhoComDados();
-
-  const stepperHtml = `
-    <nav class="cart-stepper" aria-label="Etapas da compra">
-      <div class="cart-stepper__etapa cart-stepper__etapa--ativa">
-        <span class="cart-stepper__numero">1</span> Carrinho
-      </div>
-      <div class="cart-stepper__etapa">
-        <span class="cart-stepper__numero">2</span> Identificação
-      </div>
-      <div class="cart-stepper__etapa">
-        <span class="cart-stepper__numero">3</span> Pagamento
-      </div>
-    </nav>
-  `;
-
-  if (itens.length === 0) {
-    container.innerHTML = `
-      <div class="cart-card">
-        ${stepperHtml}
-        <div class="cart-empty">
-          <p class="cart-empty__title">Seu carrinho está vazio</p>
-          <p class="cart-empty__text">Explore a coleção e encontre a peça certa pro seu lado — Quebrada ou Realeza.</p>
-          <a href="index.html" class="btn-pill cart-empty__btn">Voltar para a loja</a>
-        </div>
-      </div>
-    `;
-    return;
-  }
 
   container.innerHTML = `
     <div class="cart-card">
-      ${stepperHtml}
+      ${criarStepperHtml(1)}
 
       <p class="cart-alert">
         Os produtos no carrinho não estão reservados. Finalize seu pedido antes que o estoque acabe.
@@ -206,15 +192,7 @@ function renderizarCarrinho() {
         <div class="cart-shipping">
           <p class="cart-bottom-grid__label">Prazo de entrega</p>
           <form class="cart-shipping-form" id="shipping-form">
-            <input
-              type="text"
-              id="shipping-cep"
-              class="cart-input"
-              placeholder="00000-000"
-              maxlength="9"
-              inputmode="numeric"
-              aria-label="Seu CEP"
-            >
+            <input type="text" id="shipping-cep" class="cart-input" placeholder="00000-000" maxlength="9" inputmode="numeric" aria-label="Seu CEP">
             <button type="submit" class="btn-outline">Calcular</button>
           </form>
           <p class="cart-shipping__resultado" id="shipping-result" hidden></p>
@@ -223,13 +201,7 @@ function renderizarCarrinho() {
         <div class="cart-coupon">
           <p class="cart-bottom-grid__label">Cupom de Desconto</p>
           <form class="cart-coupon-form" id="coupon-form">
-            <input
-              type="text"
-              id="coupon-code"
-              class="cart-input"
-              placeholder="Digite seu Cupom"
-              aria-label="Código do cupom"
-            >
+            <input type="text" id="coupon-code" class="cart-input" placeholder="Digite seu Cupom" aria-label="Código do cupom">
             <button type="submit" class="btn-outline">Aplicar</button>
           </form>
           <p class="cart-coupon__resultado" id="coupon-result" hidden></p>
@@ -237,20 +209,14 @@ function renderizarCarrinho() {
 
         <div id="cart-resumo-container"></div>
       </div>
-
     </div>
   `;
 
   document.getElementById('cart-resumo-container').outerHTML = criarResumoHtml(itens);
-
-  configurarEventosDoCarrinho();
+  configurarEventosDaEtapaCarrinho();
 }
 
-/* ------------------------------------------------------------------
-   EVENTOS (quantidade, remoção, frete, cupom, continuar)
-------------------------------------------------------------------- */
-function configurarEventosDoCarrinho() {
-  // Quantidade: + e -
+function configurarEventosDaEtapaCarrinho() {
   document.querySelectorAll('.cart-qty__btn').forEach((botao) => {
     botao.addEventListener('click', () => {
       const carrinho = obterCarrinho();
@@ -263,7 +229,7 @@ function configurarEventosDoCarrinho() {
       } else if (item.quantidade > 1) {
         item.quantidade -= 1;
       } else {
-        return; // não deixa ir abaixo de 1 pelo botão — remoção é o botão "Remover"
+        return;
       }
 
       salvarCarrinho(carrinho);
@@ -271,7 +237,6 @@ function configurarEventosDoCarrinho() {
     });
   });
 
- // Remover item
   document.querySelectorAll('.cart-item__lixeira-btn').forEach((botao) => {
     botao.addEventListener('click', () => {
       const carrinho = obterCarrinho();
@@ -282,7 +247,6 @@ function configurarEventosDoCarrinho() {
     });
   });
 
-  // Cálculo de frete (simulado — mesma lógica de produto.js)
   const formularioFrete = document.getElementById('shipping-form');
   if (formularioFrete) {
     formularioFrete.addEventListener('submit', (evento) => {
@@ -301,14 +265,12 @@ function configurarEventosDoCarrinho() {
       resultado.hidden = false;
       resultado.textContent = `Entrega estimada em ${PRAZO_FRETE_DIAS} — ${formatarPreco(VALOR_FRETE_PADRAO)}`;
 
-      // Recalcula só o resumo, sem perder o que já foi digitado nos inputs
       const itens = obterItensCarrinhoComDados();
       document.querySelector('.cart-resumo').outerHTML = criarResumoHtml(itens);
       configurarEventoContinuar();
     });
   }
 
-  // Aplicação de cupom
   const formularioCupom = document.getElementById('coupon-form');
   if (formularioCupom) {
     formularioCupom.addEventListener('submit', (evento) => {
@@ -341,9 +303,140 @@ function configurarEventoContinuar() {
   if (!botaoContinuar) return;
 
   botaoContinuar.addEventListener('click', () => {
-    // Próxima etapa (Identificação) ainda não existe — placeholder por enquanto
-    alert('Próxima etapa: Identificação (em construção).');
+    etapaAtual = 2;
+    renderizarCarrinho();
   });
+}
+
+/* ------------------------------------------------------------------
+   ETAPA 2 — IDENTIFICAÇÃO
+------------------------------------------------------------------- */
+function criarIdentificacaoUsuarioEncontradoHtml(sessao) {
+  return `
+    <div class="cart-id-card">
+      <p class="cart-id-card__titulo">Identificação</p>
+      <p class="cart-id-card__status cart-id-card__status--ok">Usuário Encontrado ✅</p>
+      <p class="cart-id-card__texto">
+        Você já está logado na sua conta Source, seu e-mail de cadastro é
+        <strong>${sessao.email}</strong>.
+      </p>
+      <p class="cart-id-card__texto">Deseja continuar?</p>
+
+      <button type="button" class="btn-pill cart-id-card__btn" id="btn-concluir-compra">Concluir Compra</button>
+      <button type="button" class="cart-id-card__link" id="btn-trocar-conta">Deseja Trocar de Conta ?</button>
+    </div>
+  `;
+}
+
+function criarIdentificacaoUsuarioNaoEncontradoHtml() {
+  return `
+    <div class="cart-id-card">
+      <p class="cart-id-card__titulo">Identificação</p>
+      <p class="cart-id-card__texto">Entre ou crie uma conta SOURCE, para concluir sua compra.</p>
+      <p class="cart-id-card__beneficios">
+        Receba cashback, cupons de desconto, acesso antecipado a produtos e outros benefícios gratuitos.
+      </p>
+
+      <a href="login.html?redirect=checkout" class="btn-pill cart-id-card__btn">Entrar ou criar conta</a>
+      <p class="cart-id-card__rodape">Para usar Cupons de Desconto, é necessária uma conta.</p>
+    </div>
+  `;
+}
+
+function renderizarEtapaIdentificacao() {
+  const container = document.getElementById('cart-container');
+  const sessao = obterSessaoAtiva();
+
+  const conteudoHtml = sessao
+    ? criarIdentificacaoUsuarioEncontradoHtml(sessao)
+    : criarIdentificacaoUsuarioNaoEncontradoHtml();
+
+  container.innerHTML = `
+    <div class="cart-card">
+      ${criarStepperHtml(2)}
+      <div class="cart-identificacao">
+        ${conteudoHtml}
+      </div>
+    </div>
+  `;
+
+  configurarEventosDaIdentificacao();
+}
+
+function configurarEventosDaIdentificacao() {
+  const botaoConcluir = document.getElementById('btn-concluir-compra');
+  if (botaoConcluir) {
+    botaoConcluir.addEventListener('click', () => {
+      etapaAtual = 3;
+      renderizarCarrinho();
+    });
+  }
+
+  const botaoTrocarConta = document.getElementById('btn-trocar-conta');
+  if (botaoTrocarConta) {
+    botaoTrocarConta.addEventListener('click', () => {
+      removerSessaoAtiva();
+      renderizarCarrinho(); // re-renderiza a mesma etapa 2, agora no Cenário B
+    });
+  }
+}
+
+/* ------------------------------------------------------------------
+   ETAPA 3 — PAGAMENTO (placeholder, ainda não desenvolvido)
+------------------------------------------------------------------- */
+function renderizarEtapaPagamento() {
+  const container = document.getElementById('cart-container');
+
+  container.innerHTML = `
+    <div class="cart-card">
+      ${criarStepperHtml(3)}
+      <div class="cart-empty">
+        <p class="cart-empty__title">Pagamento em construção</p>
+        <p class="cart-empty__text">Essa etapa ainda está sendo desenvolvida.</p>
+        <button type="button" class="btn-pill cart-empty__btn" id="btn-voltar-identificacao">Voltar</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('btn-voltar-identificacao').addEventListener('click', () => {
+    etapaAtual = 2;
+    renderizarCarrinho();
+  });
+}
+
+/* ------------------------------------------------------------------
+   ORQUESTRADOR PRINCIPAL
+------------------------------------------------------------------- */
+function renderizarCarrinho() {
+  const container = document.getElementById('cart-container');
+  const itens = obterItensCarrinhoComDados();
+
+  if (itens.length === 0) {
+    etapaAtual = 1;
+    container.innerHTML = `
+      <div class="cart-card">
+        ${criarStepperHtml(1)}
+        <div class="cart-empty">
+          <p class="cart-empty__title">Seu carrinho está vazio</p>
+          <p class="cart-empty__text">Explore a coleção e encontre a peça certa pro seu lado — Quebrada ou Realeza.</p>
+          <a href="index.html" class="btn-pill cart-empty__btn">Voltar para a loja</a>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  if (etapaAtual === 2) {
+    renderizarEtapaIdentificacao();
+    return;
+  }
+
+  if (etapaAtual === 3) {
+    renderizarEtapaPagamento();
+    return;
+  }
+
+  renderizarEtapaCarrinho(itens);
 }
 
 /* ------------------------------------------------------------------
@@ -351,7 +444,7 @@ function configurarEventoContinuar() {
 ------------------------------------------------------------------- */
 function iniciarPaginaDeCarrinho() {
   const container = document.getElementById('cart-container');
-  if (!container) return; // esta página não é o carrinho.html
+  if (!container) return;
 
   renderizarCarrinho();
 }

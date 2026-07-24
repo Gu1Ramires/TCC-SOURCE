@@ -266,7 +266,7 @@ function tratarSubmitAuth(evento) {
     document.getElementById('auth-form').reset();
     alternarModoAuth(); // volta pro modo login, já pronto pra ele entrar
 
-  } else {
+ } else {
     if (!contaExiste(email)) {
       alert('Você ainda não tem uma conta. Cadastre-se para continuar.');
       return;
@@ -277,8 +277,12 @@ function tratarSubmitAuth(evento) {
       return;
     }
 
+    salvarSessaoAtiva(email);
     alert('Login realizado com sucesso!');
-    window.location.href = 'index.html';
+
+    const parametros = new URLSearchParams(window.location.search);
+    const redirect = parametros.get('redirect');
+    window.location.href = redirect === 'checkout' ? 'carrinho.html' : 'index.html';
   }
 }
 
@@ -313,6 +317,27 @@ function atualizarContadorCarrinho() {
   const contador = document.getElementById('cart-count');
   if (!contador) return; // guard clause: nem toda página tem o header completo
   contador.textContent = String(calcularQuantidadeTotalCarrinho());
+}
+
+/* ------------------------------------------------------------------
+   SESSÃO ATIVA (LocalStorage)
+   Guarda quem está "logado" no momento — diferente de
+   source_contas_ficticias, que é só o cadastro de contas existentes.
+   Aqui é o estado de "quem está usando o site agora".
+------------------------------------------------------------------- */
+const CHAVE_SESSAO_ATIVA = 'source_sessao_ativa';
+
+function salvarSessaoAtiva(email) {
+  localStorage.setItem(CHAVE_SESSAO_ATIVA, JSON.stringify({ email }));
+}
+
+function obterSessaoAtiva() {
+  const dados = localStorage.getItem(CHAVE_SESSAO_ATIVA);
+  return dados ? JSON.parse(dados) : null;
+}
+
+function removerSessaoAtiva() {
+  localStorage.removeItem(CHAVE_SESSAO_ATIVA);
 }
 
 /**

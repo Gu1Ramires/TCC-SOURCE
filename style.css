@@ -1769,6 +1769,89 @@ body.modo-realeza .auth-input {
   }
 }
 
+
+/* -------------------- IDENTIFICAÇÃO (etapa 2) --------------------
+   Mesmo raciocínio visual do .cart-empty: um retângulo cinza-claro
+   centralizado DENTRO do .cart-card branco. */
+.cart-identificacao {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.25rem;
+}
+
+.cart-id-card {
+  background-color: #F2F2F2;
+  border-radius: 4px;
+  padding: 2.5rem 2rem;
+  max-width: 420px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  text-align: center;
+}
+
+.cart-id-card__titulo {
+  font-family: var(--font-principal);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #17140F;
+  margin-bottom: 0.25rem;
+}
+
+.cart-id-card__status {
+  font-family: var(--font-principal);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.cart-id-card__status--ok {
+  color: #2E8B57;
+}
+
+.cart-id-card__texto {
+  font-family: var(--font-principal);
+  font-size: 0.82rem;
+  color: #55504A;
+  max-width: 320px;
+}
+
+.cart-id-card__beneficios {
+  font-family: var(--font-principal);
+  font-size: 0.78rem;
+  color: #6B6660;
+  max-width: 320px;
+}
+
+.cart-id-card__btn {
+  margin-top: 0.75rem;
+  background-color: #17140F;
+  color: #FFFFFF;
+  width: 100%;
+  max-width: 260px;
+  text-align: center;
+}
+
+.cart-id-card__link {
+  margin-top: 0.4rem;
+  background: none;
+  border: none;
+  font-family: var(--font-principal);
+  font-size: 0.78rem;
+  text-decoration: underline;
+  color: #6B6660;
+  cursor: pointer;
+}
+
+.cart-id-card__rodape {
+  margin-top: 0.5rem;
+  font-family: var(--font-principal);
+  font-size: 0.72rem;
+  color: #9A9A9A;
+}
+
+
 /* Acessibilidade: respeita preferência de movimento reduzido */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
