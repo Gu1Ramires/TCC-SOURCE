@@ -21,13 +21,19 @@ const CUPONS_VALIDOS = {
 
 const VALOR_FRETE_PADRAO = 9.9;
 const PRAZO_FRETE_DIAS = '5 a 8 dias úteis';
+const DESCONTO_PIX = 10.0;
 
-let cupomAplicado = null;
-let freteCalculado = false;
-let etapaAtual = 1; // 1 = Carrinho, 2 = Identificação, 3 = Pagamento
+let cupomAplicado = null; // string do código, ou null
+let freteCalculado = false; // só entra no total depois do CEP calculado
+let etapaAtual = 1; // 1 = Carrinho, 2 = Identificação, 3 = Pagamento, 4 = Sucesso
+let metodoPagamentoSelecionado = 'cartao'; // 'cartao' ou 'pix'
 
 /* ------------------------------------------------------------------
    LEITURA DO CARRINHO + DADOS DO PRODUTO
+   O carrinho salvo no LocalStorage só guarda { produtoId, tamanho,
+   quantidade } — aqui cruzamos com o array PRODUTOS (de sale.js)
+   pra ter nome, preço, cor, etc. Produtos removidos do catálogo
+   simplesmente somem da lista (filter), sem quebrar a tela.
 ------------------------------------------------------------------- */
 function obterItensCarrinhoComDados() {
   const carrinho = obterCarrinho();
@@ -217,6 +223,7 @@ function renderizarEtapaCarrinho(itens) {
 }
 
 function configurarEventosDaEtapaCarrinho() {
+  // Quantidade: + e -
   document.querySelectorAll('.cart-qty__btn').forEach((botao) => {
     botao.addEventListener('click', () => {
       const carrinho = obterCarrinho();
@@ -229,7 +236,7 @@ function configurarEventosDaEtapaCarrinho() {
       } else if (item.quantidade > 1) {
         item.quantidade -= 1;
       } else {
-        return;
+        return; // não deixa ir abaixo de 1 pelo botão — remoção é a lixeira
       }
 
       salvarCarrinho(carrinho);
@@ -237,6 +244,7 @@ function configurarEventosDaEtapaCarrinho() {
     });
   });
 
+  // Remover item (lixeira)
   document.querySelectorAll('.cart-item__lixeira-btn').forEach((botao) => {
     botao.addEventListener('click', () => {
       const carrinho = obterCarrinho();
@@ -247,6 +255,7 @@ function configurarEventosDaEtapaCarrinho() {
     });
   });
 
+  // Cálculo de frete (simulado — mesma lógica de produto.js)
   const formularioFrete = document.getElementById('shipping-form');
   if (formularioFrete) {
     formularioFrete.addEventListener('submit', (evento) => {
@@ -271,6 +280,7 @@ function configurarEventosDaEtapaCarrinho() {
     });
   }
 
+  // Aplicação de cupom
   const formularioCupom = document.getElementById('coupon-form');
   if (formularioCupom) {
     formularioCupom.addEventListener('submit', (evento) => {
@@ -382,26 +392,139 @@ function configurarEventosDaIdentificacao() {
 }
 
 /* ------------------------------------------------------------------
-   ETAPA 3 — PAGAMENTO (placeholder, ainda não desenvolvido)
+   ETAPA 3 — PAGAMENTO
+   Duas opções (Cartão / Pix), com o Pix aplicando um desconto fixo
+   (DESCONTO_PIX) somado ao desconto de cupom já calculado na etapa 1.
+   O cupomAplicado e o frete continuam vivos no estado do módulo —
+   não precisam ser recalculados, só reaproveitados aqui.
 ------------------------------------------------------------------- */
-function renderizarEtapaPagamento() {
+function criarOpcaoPagamentoHtml(valor, titulo, subtexto, destaque) {
+  const selecionada = metodoPagamentoSelecionado === valor;
+  return `
+    <label class="payment-option ${selecionada ? 'payment-option--selecionada' : ''}">
+      <input type="radio" name="metodo-pagamento" value="${valor}" ${selecionada ? 'checked' : ''}>
+      <span class="payment-option__conteudo">
+        <span class="payment-option__titulo">${titulo}</span>
+        <span class="payment-option__sub ${destaque ? 'payment-option__sub--destaque' : ''}">${subtexto}</span>
+      </span>
+    </label>
+  `;
+}
+
+function criarResumoPagamentoHtml(itens) {
+  const subtotal = calcularSubtotal(itens);
+  const descontoCupom = calcularDesconto(subtotal);
+  const frete = calcularFrete();
+  const descontoPix = metodoPagamentoSelecionado === 'pix' ? DESCONTO_PIX : 0;
+  const total = subtotal - descontoCupom - descontoPix + frete;
+  const nomeMetodo = metodoPagamentoSelecionado === 'pix' ? 'Pix' : 'Cartão de Crédito';
+
+  return `
+    <aside class="cart-resumo" id="payment-resumo">
+      <p class="cart-resumo__titulo">Resumo</p>
+
+      <div class="cart-resumo__linha">
+        <span>Valor dos produtos</span>
+        <span>${formatarPreco(subtotal)}</span>
+      </div>
+
+      <div class="cart-resumo__linha">
+        <span>Desconto Pix</span>
+        <span class="cart-resumo__desconto">${descontoPix > 0 ? '-' + formatarPreco(descontoPix) : formatarPreco(0)}</span>
+      </div>
+
+      <div class="cart-resumo__linha">
+        <span>Frete</span>
+        <span>${formatarPreco(frete)}</span>
+      </div>
+
+      <div class="cart-resumo__linha cart-resumo__linha--total">
+        <span>Total da Compra</span>
+        <span>${formatarPreco(total)} no ${nomeMetodo}</span>
+      </div>
+
+      <button type="button" class="btn-pill cart-resumo__continuar" id="btn-finalizar-compra">Finalizar compra</button>
+    </aside>
+  `;
+}
+
+function renderizarEtapaPagamento(itens) {
   const container = document.getElementById('cart-container');
 
   container.innerHTML = `
     <div class="cart-card">
       ${criarStepperHtml(3)}
-      <div class="cart-empty">
-        <p class="cart-empty__title">Pagamento em construção</p>
-        <p class="cart-empty__text">Essa etapa ainda está sendo desenvolvida.</p>
-        <button type="button" class="btn-pill cart-empty__btn" id="btn-voltar-identificacao">Voltar</button>
+
+      <div class="payment-page">
+        <p class="payment-page__titulo">Pagamento</p>
+        <p class="payment-page__subtitulo">Selecione um método de pagamento</p>
+
+        <div class="payment-options" id="payment-options">
+          ${criarOpcaoPagamentoHtml('cartao', 'Cartão de Crédito', 'Parcele em até 3x sem juros', false)}
+          ${criarOpcaoPagamentoHtml('pix', 'Pix', `Ganha ${formatarPreco(DESCONTO_PIX)} de desconto`, true)}
+        </div>
+
+        <div id="payment-resumo-container"></div>
+
+        <p class="payment-page__rodape">Ao finalizar a sua compra, você concordará com a nossa política de reembolso.</p>
       </div>
     </div>
   `;
 
-  document.getElementById('btn-voltar-identificacao').addEventListener('click', () => {
-    etapaAtual = 2;
-    renderizarCarrinho();
+  document.getElementById('payment-resumo-container').outerHTML = criarResumoPagamentoHtml(itens);
+  configurarEventosDaEtapaPagamento(itens);
+}
+
+function configurarEventosDaEtapaPagamento(itens) {
+  // Trocar método de pagamento re-renderiza a etapa inteira (mais simples
+  // e seguro do que remontar só o pedaço, já que o radio precisa refletir
+  // a nova seleção nos dois cards ao mesmo tempo)
+  document.querySelectorAll('input[name="metodo-pagamento"]').forEach((radio) => {
+    radio.addEventListener('change', () => {
+      metodoPagamentoSelecionado = radio.value;
+      renderizarEtapaPagamento(itens);
+    });
   });
+
+  const botaoFinalizar = document.getElementById('btn-finalizar-compra');
+  if (botaoFinalizar) {
+    botaoFinalizar.addEventListener('click', () => {
+      salvarCarrinho([]); // limpa o carrinho — a compra foi concluída
+      etapaAtual = 4;
+      renderizarCarrinho();
+    });
+  }
+}
+
+/* ------------------------------------------------------------------
+   ETAPA 4 — SUCESSO
+   Única tela do fluxo sem stepper (o checkout já terminou). Renderiza
+   direto a partir de renderizarCarrinho(), sem passar pela checagem
+   de "carrinho vazio" — nesse ponto o carrinho ESTÁ vazio de propósito.
+------------------------------------------------------------------- */
+function renderizarTelaSucesso() {
+  const container = document.getElementById('cart-container');
+
+  container.innerHTML = `
+    <div class="cart-card payment-success">
+      <div class="payment-success__icone" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M8 12.5l2.5 2.5L16 9.5"></path>
+        </svg>
+      </div>
+
+      <p class="payment-success__titulo">Parabéns !!</p>
+      <p class="payment-success__subtitulo">Compra realizada com sucesso.</p>
+
+      <div class="payment-success__card">
+        <p class="payment-success__marca">SOURCE</p>
+        <p class="payment-success__mensagem">Agradecemos a sua Preferência</p>
+      </div>
+
+      <a href="index.html" class="btn-pill payment-success__btn">Voltar ao início</a>
+    </div>
+  `;
 }
 
 /* ------------------------------------------------------------------
@@ -409,6 +532,15 @@ function renderizarEtapaPagamento() {
 ------------------------------------------------------------------- */
 function renderizarCarrinho() {
   const container = document.getElementById('cart-container');
+
+  // Etapa 4 (Sucesso) acontece DEPOIS de esvaziar o carrinho de propósito —
+  // por isso ela precisa vir antes da checagem de "carrinho vazio" abaixo,
+  // senão cairia sempre na tela errada de "carrinho vazio".
+  if (etapaAtual === 4) {
+    renderizarTelaSucesso();
+    return;
+  }
+
   const itens = obterItensCarrinhoComDados();
 
   if (itens.length === 0) {
@@ -432,7 +564,7 @@ function renderizarCarrinho() {
   }
 
   if (etapaAtual === 3) {
-    renderizarEtapaPagamento();
+    renderizarEtapaPagamento(itens);
     return;
   }
 
@@ -444,7 +576,7 @@ function renderizarCarrinho() {
 ------------------------------------------------------------------- */
 function iniciarPaginaDeCarrinho() {
   const container = document.getElementById('cart-container');
-  if (!container) return;
+  if (!container) return; // esta página não é o carrinho.html
 
   renderizarCarrinho();
 }
