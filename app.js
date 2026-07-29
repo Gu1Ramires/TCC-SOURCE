@@ -128,9 +128,24 @@ function configurarZonasDoHero() {
 function iniciarApp() {
   aplicarTemaInicial();
   atualizarContadorCarrinho();
+  preencherBuscaHeader();
 
   configurarZonasDoHero();
   configurarAuth();
+}
+
+/**
+ * Se a URL atual tem ?busca=termo (ex: depois de pesquisar em sale.html),
+ * o campo de busca do header já nasce preenchido com o mesmo termo —
+ * evita a sensação de "a busca sumiu" depois do redirecionamento.
+ */
+function preencherBuscaHeader() {
+  const campoBusca = document.querySelector('.header__search-input');
+  if (!campoBusca) return;
+
+  const parametros = new URLSearchParams(window.location.search);
+  const termo = parametros.get('busca');
+  if (termo) campoBusca.value = termo;
 }
 
 

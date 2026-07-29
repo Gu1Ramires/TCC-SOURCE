@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SOURCE — Carrinho</title>
-  <meta name="description" content="Revise seus produtos e finalize sua compra na SOURCE.">
+  <title>SOURCE — Sobre, Trocas e Contato</title>
+  <meta name="description" content="Conheça a história da SOURCE, nossa política de trocas e devoluções, e fale com nosso time de suporte.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,11 +40,13 @@
         </a>
 
         <button class="icon-btn icon-btn--cart" aria-label="Carrinho de compras">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <circle cx="9" cy="21" r="1"></circle>
-            <circle cx="20" cy="21" r="1"></circle>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-          </svg>
+          <a href="carrinho.html" class="icon-btn" aria-label="Entrar em carrinho">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+          </a>
           <span class="cart-count" id="cart-count">0</span>
         </button>
       </nav>
@@ -59,22 +61,74 @@
   </header>
 
   <!-- ============================================
-       BREADCRUMB SIMPLES (mesmo espírito do protótipo)
+       PÁGINA INSTITUCIONAL
+       Três seções em uma única página, navegáveis por âncora
+       (sobre.html#quem-somos, #trocas, #contato) — evita criar
+       3 arquivos separados só pra conteúdo estático.
   ============================================= -->
-  <div class="cart-breadcrumb">
-    <span>Início</span> · <span>Sale</span>
-  </div>
+  <main class="institutional-page">
 
-  <!-- ============================================
-       CARRINHO / CHECKOUT
-       Todo o conteúdo aqui dentro nasce vazio e é montado
-       dinamicamente pelo carrinho.js, a partir do que estiver
-       salvo em LocalStorage (chave 'source_carrinho').
-  ============================================= -->
-  <main class="cart-page">
-    <div id="cart-container" aria-live="polite">
-      <!-- Conteúdo (card do carrinho OU empty state) inserido via JS -->
-    </div>
+    <nav class="institutional-nav" aria-label="Navegação rápida da página">
+      <a href="#quem-somos">Quem Somos</a>
+      <a href="#trocas">Trocas e Devoluções</a>
+      <a href="#contato">Contato</a>
+    </nav>
+
+    <section id="quem-somos" class="institutional-section">
+      <p class="institutional-section__eyebrow">A Marca</p>
+      <h1 class="institutional-section__titulo">Quem Somos</h1>
+      <div class="institutional-section__corpo">
+        <p>
+          SOURCE nasceu da ideia de que ninguém precisa escolher só um lado. A marca une duas
+          identidades que, à primeira vista, parecem opostas: <strong>Quebrada</strong>, o streetwear
+          urbano que carrega a textura e a atitude da rua, e <strong>Realeza</strong>, a alfaiataria
+          minimalista de corte preciso e silêncio proposital.
+        </p>
+        <p>
+          Cada peça do catálogo pertence a um desses dois universos — não como uma escolha estética
+          do momento, mas como parte da identidade real do produto. O site inteiro reflete essa dualidade:
+          muda de tema conforme o horário, mas sempre deixa você escolher livremente qual lado quer vestir.
+        </p>
+        <p>
+          Mais do que uma coleção de roupas, SOURCE é sobre ter liberdade pra transitar entre mundos sem
+          precisar justificar nenhum deles.
+        </p>
+      </div>
+    </section>
+
+    <section id="trocas" class="institutional-section">
+      <p class="institutional-section__eyebrow">Política</p>
+      <h1 class="institutional-section__titulo">Trocas e Devoluções</h1>
+      <div class="institutional-section__corpo">
+        <p>
+          Você tem até <strong>30 dias corridos</strong> após o recebimento do produto para solicitar
+          troca ou devolução, desde que a peça esteja sem uso, com etiquetas originais e na embalagem
+          de envio.
+        </p>
+        <ul class="institutional-section__lista">
+          <li>Troca por outro tamanho ou cor da mesma peça: sem custo de frete.</li>
+          <li>Troca por peça diferente: diferença de valor calculada no momento da troca.</li>
+          <li>Devolução com reembolso: estorno em até 2 faturas (cartão) ou 5 dias úteis (Pix).</li>
+        </ul>
+        <p>
+          Para iniciar uma solicitação, entre em contato pelos canais da seção abaixo informando o
+          número do pedido.
+        </p>
+      </div>
+    </section>
+
+    <section id="contato" class="institutional-section">
+      <p class="institutional-section__eyebrow">Suporte</p>
+      <h1 class="institutional-section__titulo">Contato</h1>
+      <div class="institutional-section__corpo">
+        <p>Nosso time de atendimento responde de segunda a sexta, das 9h às 18h.</p>
+        <ul class="institutional-section__contatos">
+          <li><strong>E-mail:</strong> <a href="mailto:contato@sourceclothing.com.br">contato@sourceclothing.com.br</a></li>
+          <li><strong>WhatsApp:</strong> (11) 92085-2768</li>
+        </ul>
+      </div>
+    </section>
+
   </main>
 
   <!-- ============================================
@@ -155,7 +209,5 @@
   </footer>
 
   <script src="app.js"></script>
-  <script src="sale.js"></script>
-  <script src="carrinho.js"></script>
 </body>
 </html>

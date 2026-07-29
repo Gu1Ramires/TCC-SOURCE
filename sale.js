@@ -144,6 +144,27 @@ function obterProdutos() {
   return PRODUTOS;
 }
 
+/**
+ * Lê o termo digitado na busca do header (?busca=... na URL).
+ * O formulário de busca do header já envia GET pra sale.html?busca=termo
+ * — aqui só lemos esse parâmetro e aplicamos como mais um filtro.
+ */
+function obterTermoBuscaDaUrl() {
+  const parametros = new URLSearchParams(window.location.search);
+  return (parametros.get('busca') || '').trim().toLowerCase();
+}
+
+/**
+ * Verdadeiro se o termo buscado aparece no nome, na coleção ou no
+ * tipo/categoria do produto — busca simples por substring, sem
+ * acento/case sensitivity.
+ */
+function produtoCorrespondeABusca(produto, termo) {
+  if (!termo) return true;
+  const alvo = `${produto.nome} ${produto.colecao} ${produto.tipo}`.toLowerCase();
+  return alvo.includes(termo);
+}
+
 function formatarPreco(valor) {
   return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
@@ -221,7 +242,7 @@ function criarCardProduto(produto) {
  * Renderiza a lista de produtos dentro do .product-grid e atualiza
  * o contador de itens da barra de filtros.
  */
-function renderizarProdutos(lista) {
+function renderizarProdutos(lista, termoBusca) {
   const grid = document.getElementById('product-grid');
   if (!grid) return; // esta página não tem catálogo
 
@@ -229,7 +250,10 @@ function renderizarProdutos(lista) {
 
   const contador = document.getElementById('catalog-count');
   if (contador) {
-    contador.textContent = `${lista.length} produto${lista.length !== 1 ? 's' : ''}`;
+    const quantidadeTexto = `${lista.length} produto${lista.length !== 1 ? 's' : ''}`;
+    contador.textContent = termoBusca
+      ? `${quantidadeTexto} encontrados para "${termoBusca}"`
+      : quantidadeTexto;
   }
 }
 
@@ -244,6 +268,11 @@ function aplicarFiltrosEOrdenacao() {
   const ordenacao = document.getElementById('catalog-sort');
 
   let lista = obterProdutos();
+
+  const termoBusca = obterTermoBuscaDaUrl();
+  if (termoBusca) {
+    lista = lista.filter((produto) => produtoCorrespondeABusca(produto, termoBusca));
+  }
 
   const categoriaEscolhida = filtroCategoria ? filtroCategoria.value : 'todos';
   if (categoriaEscolhida !== 'todos') {
@@ -262,7 +291,7 @@ function aplicarFiltrosEOrdenacao() {
     lista = [...lista].sort((a, b) => b.preco - a.preco);
   }
 
-  renderizarProdutos(lista);
+  renderizarProdutos(lista, termoBusca);
 }
 
 function configurarCatalogo() {
