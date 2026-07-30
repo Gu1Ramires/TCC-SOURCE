@@ -165,6 +165,17 @@ function produtoCorrespondeABusca(produto, termo) {
   return alvo.includes(termo);
 }
 
+/**
+ * Lê ?lado=quebrada|realeza da URL — usado pelo botão "Explorar coleção"
+ * do Hero (index.js), que já chega em sale.html com o lado escolhido.
+ * Só aplica o valor uma vez, na carga inicial da página.
+ */
+function obterLadoDaUrl() {
+  const parametros = new URLSearchParams(window.location.search);
+  const lado = parametros.get('lado');
+  return lado === 'quebrada' || lado === 'realeza' ? lado : null;
+}
+
 function formatarPreco(valor) {
   return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
@@ -298,10 +309,15 @@ function configurarCatalogo() {
   const grid = document.getElementById('product-grid');
   if (!grid) return; // esta página não é o catálogo
 
+  const filtroLado = document.getElementById('catalog-filter-lado');
+  const ladoDaUrl = obterLadoDaUrl();
+  if (filtroLado && ladoDaUrl) {
+    filtroLado.value = ladoDaUrl; // já chega filtrado, vindo do Hero da home
+  }
+
   aplicarFiltrosEOrdenacao(); // renderização inicial
 
   const filtroCategoria = document.getElementById('catalog-filter-categoria');
-  const filtroLado = document.getElementById('catalog-filter-lado');
   const ordenacao = document.getElementById('catalog-sort');
 
   if (filtroCategoria) filtroCategoria.addEventListener('change', aplicarFiltrosEOrdenacao);

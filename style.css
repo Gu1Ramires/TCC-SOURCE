@@ -287,7 +287,7 @@ body {
   background-size: cover;
   background-position: center;
   opacity: 0;
-  transition: opacity 0.9s ease;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .hero__bg-layer--quebrada {
@@ -321,7 +321,7 @@ body {
   inset: 0;
   display: flex;
   z-index: 2;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .hero__zone {
@@ -395,6 +395,21 @@ body {
   letter-spacing: 0.15em;
   text-transform: uppercase;
   opacity: 0.75;
+}
+
+/* Fade suave do texto no momento em que o cliente escolhe um lado —
+   os elementos já nascem visíveis (duality), então a animação só
+   dispara quando a classe hero--escolhido é adicionada. */
+.hero--escolhido .hero__pretitle,
+.hero--escolhido .hero__headline,
+.hero--escolhido .hero__sub,
+.hero--escolhido .hero__cta-btn {
+  animation: heroTextoFadeIn 0.5s ease-in-out;
+}
+
+@keyframes heroTextoFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .hero__headline {
@@ -2141,10 +2156,290 @@ body.modo-realeza .auth-input {
   }
 }
 
+/* ==================================================================
+   HOME — NOVAS SEÇÕES (index.html)
+   Container reutilizável (max-width 1400px) pras seções 2, 4 e 5.
+   A seção 3 (editorial) é a única de propósito full-bleed — por
+   isso ela NÃO usa .home-container.
+================================================================== */
+.home-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section-eyebrow {
+  font-family: var(--font-principal);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+  text-align: center;
+}
+
+.section-titulo {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 2.5rem;
+  text-transform: var(--title-transform, none);
+}
+
+/* -------------------- DROP DE LANÇAMENTO -------------------- */
+.featured-drop {
+  padding: 5rem 0 4rem;
+  background-color: var(--bg);
+  transition: background-color var(--transition-tema);
+}
+
+.featured-drop__wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.featured-drop__card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 720px;
+}
+
+.featured-drop__imagem {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 20px;
+  background-color: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: background-color var(--transition-tema);
+}
+
+.featured-drop__imagem svg {
+  width: 45%;
+  height: 45%;
+}
+
+.featured-drop__label {
+  position: absolute;
+  bottom: 0.9rem;
+  left: 0.9rem;
+  font-family: var(--font-principal);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted, var(--text));
+  opacity: 0.7;
+}
+
+.featured-drop__info {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.featured-drop__titulo {
+  font-family: var(--font-principal);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 0.5rem;
+}
+
+.featured-drop__preco {
+  font-family: var(--font-principal);
+  font-size: 0.85rem;
+  color: var(--text-muted, var(--text));
+}
+
+.featured-drop__cta-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.75rem;
+}
+
+/* -------------------- MÍDIA EDITORIAL (full-bleed) -------------------- */
+.editorial-banner {
+  width: 100%;
+  min-height: 60vh;
+  background-image: linear-gradient(135deg, #2b2320 0%, #0d0d0d 55%, #1a1410 100%);
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+}
+
+.editorial-banner__scrim {
+  width: 100%;
+  padding: 3rem 2.5rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 60%);
+  display: flex;
+  justify-content: center;
+}
+
+.editorial-banner__texto {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4vw, 2.6rem);
+  color: #FFFFFF;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+/* -------------------- GRID SECUNDÁRIO (STORYTELLING + COLEÇÃO) -------------------- */
+.home-split {
+  padding: 5rem 0;
+  background-color: var(--bg);
+  transition: background-color var(--transition-tema);
+}
+
+.home-split__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.home-split__card {
+  border-radius: 20px;
+  padding: 2.5rem;
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+}
+
+.home-split__card--story {
+  background-color: var(--surface);
+  justify-content: center;
+  gap: 0.9rem;
+  transition: background-color var(--transition-tema);
+}
+
+.home-split__titulo {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--text);
+  text-transform: var(--title-transform, none);
+}
+
+.home-split__texto {
+  font-family: var(--font-principal);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-muted, var(--text));
+  max-width: 420px;
+}
+
+.home-split__btn {
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+.home-split__card--colecao {
+  position: relative;
+  background-image: linear-gradient(150deg, #3a3a3a 0%, #111111 70%);
+  color: #FFFFFF;
+  text-decoration: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.home-split__zoom {
+  position: absolute;
+  inset: -20%;
+  background-image: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08) 0%, transparent 60%);
+  transition: transform 0.6s ease;
+}
+
+.home-split__card--colecao:hover .home-split__zoom {
+  transform: scale(1.15);
+}
+
+.home-split__colecao-label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-principal);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.85rem 2rem;
+  border: 1px solid #FFFFFF;
+  border-radius: 50px;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.home-split__card--colecao:hover .home-split__colecao-label {
+  background-color: #FFFFFF;
+  color: #111111;
+}
+
+/* -------------------- VITRINE DE PRODUTOS -------------------- */
+.home-showcase {
+  padding: 5rem 0 6rem;
+  background-color: var(--bg);
+  transition: background-color var(--transition-tema);
+}
+
+.home-showcase__cta-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+/* -------------------- RESPONSIVO (HOME) -------------------- */
+@media (max-width: 900px) {
+  .featured-drop__card {
+    max-width: 480px;
+  }
+
+  .home-split__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-split__card {
+    min-height: 280px;
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .home-container {
+    padding: 0 1.25rem;
+  }
+
+  .section-titulo {
+    font-size: 1.4rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .featured-drop__card {
+    grid-template-columns: 1fr;
+    max-width: 320px;
+  }
+
+  .editorial-banner {
+    min-height: 40vh;
+  }
+
+  .editorial-banner__scrim {
+    padding: 2rem 1.25rem;
+  }
+}
+
 /* Acessibilidade: respeita preferência de movimento reduzido */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     transition: none !important;
+    animation: none !important;
     scroll-behavior: auto !important;
   }
 }

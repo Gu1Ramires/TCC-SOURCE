@@ -32,21 +32,6 @@ const MODOS = {
   REALEZA: 'modo-realeza',
 };
 
-const CONTEUDO_HERO = {
-  quebrada: {
-    pretitle: 'Edição especial — coleção Drop 1',
-    headline: 'Onde a rua encontra o fino',
-    sub: 'Peças que carregam a textura da cidade e a assinatura da rua.',
-    cta: 'Explorar coleção',
-  },
-  realeza: {
-    pretitle: 'Edição especial — coleção Drop 1',
-    headline: 'Onde a rua encontra o fino',
-    sub: 'Alfaiataria minimalista com precisão de corte e silêncio proposital.',
-    cta: 'Explorar coleção',
-  },
-};
-
 function aplicarModoGlobal(modo) {
   document.body.classList.remove(MODOS.QUEBRADA, MODOS.REALEZA);
   document.body.classList.add(modo);
@@ -59,10 +44,11 @@ function aplicarModoGlobal(modo) {
    se o cliente escolhesse "Realeza" na home e clicasse no ícone de
    perfil, a tela de login "esquecia" a escolha e voltava pro horário.
 
-   Agora: assim que o cliente escolhe um lado no Hero, guardamos essa
-   escolha no navegador. TODA página, ao carregar, primeiro pergunta
-   "o cliente já escolheu um tema antes?" — só cai no cálculo por
-   horário se a resposta for não (ou seja, na primeira visita).
+   Agora: assim que o cliente escolhe um lado no Hero (index.js),
+   guardamos essa escolha no navegador. TODA página, ao carregar,
+   primeiro pergunta "o cliente já escolheu um tema antes?" — só cai
+   no cálculo por horário se a resposta for não (ou seja, na primeira
+   visita).
 ------------------------------------------------------------------- */
 const CHAVE_TEMA_ESCOLHIDO = 'source_tema_escolhido';
 
@@ -92,45 +78,11 @@ function aplicarTemaInicial() {
   aplicarModoGlobal(modo);
 }
 
-const heroEl = document.getElementById('hero');
-
-function atualizarTextoHero(lado) {
-  const conteudo = CONTEUDO_HERO[lado];
-  document.getElementById('hero-pretitle').textContent = conteudo.pretitle;
-  document.getElementById('hero-headline').textContent = conteudo.headline;
-  document.getElementById('hero-sub').textContent = conteudo.sub;
-
-  const botaoCta = document.getElementById('hero-cta');
-  botaoCta.textContent = conteudo.cta;
-  botaoCta.hidden = false;
-}
-
-function escolherLadoHero(lado) {
-  heroEl.classList.remove('hero--quebrada', 'hero--realeza');
-  heroEl.classList.add(lado === 'quebrada' ? 'hero--quebrada' : 'hero--realeza');
-  heroEl.classList.add('hero--escolhido');
-
-  atualizarTextoHero(lado);
-
-  const modoGlobal = lado === 'quebrada' ? MODOS.QUEBRADA : MODOS.REALEZA;
-  aplicarModoGlobal(modoGlobal);
-  salvarTemaEscolhido(modoGlobal); // agora essa escolha "viaja" com o cliente pelo site
-}
-
-function configurarZonasDoHero() {
-  document.querySelectorAll('.hero__zone').forEach((zona) => {
-    zona.addEventListener('click', () => {
-      escolherLadoHero(zona.dataset.mode);
-    });
-  });
-}
-
 function iniciarApp() {
   aplicarTemaInicial();
   atualizarContadorCarrinho();
   preencherBuscaHeader();
 
-  configurarZonasDoHero();
   configurarAuth();
 }
 

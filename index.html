@@ -157,12 +157,82 @@
 
     </section>
 
-    <!-- Seção seguinte de exemplo, para demonstrar o tema global já aplicado por horário -->
-    <section class="intro">
-      <p class="intro__text">
-        O restante do site já nasce no tema certo para o seu horário — de dia, Realeza;
-        de noite, Quebrada. A foto acima, porém, só muda quando você escolhe um lado.
-      </p>
+    <!-- ============================================
+         DROP DE LANÇAMENTO
+         Produto em destaque, renderizado via index.js a partir do
+         array PRODUTOS (sale.js) — troca só o ID_PRODUTO_DESTAQUE
+         em index.js quando o drop mudar.
+    ============================================= -->
+    <section class="featured-drop" aria-label="Drop de lançamento">
+      <div class="home-container">
+        <p class="section-eyebrow">Drop 01</p>
+        <h2 class="section-titulo">Peça de Lançamento</h2>
+
+        <div id="featured-drop-container" class="featured-drop__wrapper" aria-live="polite">
+          <!-- Conteúdo montado via JS (index.js) -->
+        </div>
+
+        <div class="featured-drop__cta-wrapper">
+          <a href="produto.html" id="featured-drop-cta" class="btn-pill">Ver Peça Exclusiva</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         MÍDIA EDITORIAL (full-bleed)
+         TROCA FUTURA: substituir o gradiente de placeholder abaixo
+         (definido em style.css, classe .editorial-banner) pela foto
+         real da campanha lifestyle/urbana.
+    ============================================= -->
+    <section class="editorial-banner" aria-label="Editorial urbano SOURCE">
+      <div class="editorial-banner__scrim">
+        <p class="editorial-banner__texto">Feito pra rua. Feito pra você.</p>
+      </div>
+    </section>
+
+    <!-- ============================================
+         GRID SECUNDÁRIO: STORYTELLING + ATALHO DE COLEÇÃO
+    ============================================= -->
+    <section class="home-split" aria-label="Nossa história e coleção">
+      <div class="home-container home-split__grid">
+
+        <div class="home-split__card home-split__card--story">
+          <p class="section-eyebrow">A Marca</p>
+          <h2 class="home-split__titulo">Streetwear de luxo, sem escolher só um lado</h2>
+          <p class="home-split__texto">
+            SOURCE nasce do encontro entre a rua e o alfaiate — duas linguagens que parecem
+            opostas, mas compartilham a mesma obsessão por caimento, atitude e detalhe.
+          </p>
+          <a href="sobre.html#quem-somos" class="btn-outline home-split__btn">Conheça Nossa História</a>
+        </div>
+
+        <a href="sale.html" class="home-split__card home-split__card--colecao" aria-label="Ver coleção completa no catálogo">
+          <span class="home-split__zoom" aria-hidden="true"></span>
+          <span class="home-split__colecao-label">Ver Coleção</span>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ============================================
+         VITRINE DE PRODUTOS
+         Recorte curado do catálogo, renderizado via index.js
+         reaproveitando criarCardProduto() de sale.js — mesmo card
+         visual usado em sale.html.
+    ============================================= -->
+    <section class="home-showcase" aria-label="Vitrine de produtos">
+      <div class="home-container">
+        <p class="section-eyebrow">Catálogo</p>
+        <h2 class="section-titulo">Selecionados pra você</h2>
+
+        <div class="product-grid" id="home-showcase-grid" aria-live="polite">
+          <!-- Cards inseridos via JS (index.js) -->
+        </div>
+
+        <div class="home-showcase__cta-wrapper">
+          <a href="sale.html" class="btn-outline">Ver catálogo completo</a>
+        </div>
+      </div>
     </section>
   </main>
 
@@ -244,5 +314,7 @@
   </footer>
 
   <script src="app.js"></script>
+  <script src="sale.js"></script>
+  <script src="index.js"></script>
 </body>
 </html>
