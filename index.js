@@ -140,6 +140,7 @@ function renderizarVitrineHome() {
     .filter(Boolean);
 
   grid.innerHTML = produtosVitrine.map(criarCardProduto).join('');
+  configurarBotoesFavoritar(); // mesma função de sale.js — o card é o mesmo
 }
 
 /* ------------------------------------------------------------------

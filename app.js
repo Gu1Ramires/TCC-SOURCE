@@ -328,4 +328,97 @@ function removerSessaoAtiva() {
   localStorage.removeItem(CHAVE_SESSAO_ATIVA);
 }
 
+/* ==================================================================
+   FAVORITOS (LocalStorage)
+   Compartilhado por sale.html (cards do catálogo) e produto.html
+   (botão "Salvar nos Favoritos") — mesma chave, mesmo array de IDs,
+   pra o estado de favoritado ser sempre o mesmo nas duas telas.
+================================================================== */
+const CHAVE_FAVORITOS = 'source_favoritos';
+
+function obterFavoritos() {
+  const dados = localStorage.getItem(CHAVE_FAVORITOS);
+  return dados ? JSON.parse(dados) : [];
+}
+
+function salvarFavoritos(favoritos) {
+  localStorage.setItem(CHAVE_FAVORITOS, JSON.stringify(favoritos));
+}
+
+function produtoEstaFavoritado(produtoId) {
+  return obterFavoritos().includes(produtoId);
+}
+
+/**
+ * Adiciona ou remove um produto dos favoritos, conforme o estado
+ * atual. Retorna o NOVO estado (true = favoritado), pra quem chamou
+ * já saber como atualizar o botão sem precisar consultar de novo.
+ */
+function alternarFavorito(produtoId) {
+  const favoritos = obterFavoritos();
+  const indice = favoritos.indexOf(produtoId);
+
+  if (indice === -1) {
+    favoritos.push(produtoId);
+  } else {
+    favoritos.splice(indice, 1);
+  }
+
+  salvarFavoritos(favoritos);
+  return favoritos.includes(produtoId);
+}
+
+/* ==================================================================
+   FRETE (simulação compartilhada)
+   Antes, produto.js e carrinho.js tinham cada um sua própria regra
+   de frete (valores, prazos e formato diferentes). Agora as duas
+   telas chamam EXATAMENTE a mesma função — se um dia o frete real
+   entrar (API dos Correios, por exemplo), só se troca o conteúdo
+   de calcularOpcoesDeFrete() uma única vez, em um único lugar.
+================================================================== */
+const OPCOES_FRETE = [
+  { id: 'pac', nome: 'PAC', valor: 19.9, prazo: 'até 7 dias úteis' },
+  { id: 'sedex', nome: 'SEDEX', valor: 34.9, prazo: 'até 2 dias úteis' },
+];
+
+function cepEhValido(cep) {
+  return /^\d{5}-?\d{3}$/.test(cep.trim());
+}
+
+/**
+ * Retorna as opções de frete disponíveis para o CEP informado, ou
+ * null se o CEP não passar na validação de formato. Hoje as opções
+ * são sempre as mesmas (mock) — a validação de CEP é o único
+ * "filtro" real que existe por enquanto.
+ */
+function calcularOpcoesDeFrete(cep) {
+  if (!cepEhValido(cep)) return null;
+  return OPCOES_FRETE;
+}
+
+/**
+ * Monta o HTML das opções de frete como cards de rádio — mesmo
+ * componente visual usado em produto.html (informativo) e
+ * carrinho.html (onde a escolha realmente entra no total). Depende
+ * de formatarPreco, que vem de sale.js (carregado antes deste ponto
+ * de execução em todas as páginas que usam frete).
+ */
+function criarOpcoesFreteHtml(opcoes, idOpcaoSelecionada) {
+  return opcoes
+    .map((opcao) => {
+      const selecionada = opcao.id === idOpcaoSelecionada;
+      return `
+        <label class="shipping-option ${selecionada ? 'shipping-option--selecionada' : ''}">
+          <input type="radio" name="opcao-frete" value="${opcao.id}" ${selecionada ? 'checked' : ''}>
+          <span class="shipping-option__conteudo">
+            <span class="shipping-option__nome">${opcao.nome}</span>
+            <span class="shipping-option__prazo">${opcao.prazo}</span>
+          </span>
+          <span class="shipping-option__preco">${formatarPreco(opcao.valor)}</span>
+        </label>
+      `;
+    })
+    .join('');
+}
+
 document.addEventListener('DOMContentLoaded', iniciarApp);

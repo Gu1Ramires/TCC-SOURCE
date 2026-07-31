@@ -148,7 +148,7 @@ function criarBlocoInfoHtml(produto) {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <path d="M12 21s-7-4.35-9.5-8.5C.7 8.9 2.2 5 6 5c2 0 3.3 1 4 2.2C10.7 6 12 5 14 5c3.8 0 5.3 3.9 3.5 7.5C19 16.65 12 21 12 21z"></path>
           </svg>
-          Salvar nos Favoritos
+          <span id="btn-favoritar-label">Salvar nos Favoritos</span>
         </button>
       </div>
 
@@ -264,42 +264,44 @@ function configurarEventosDaPagina(produto) {
 
 
   
-  // Favoritar (visual só por enquanto, sem persistência ainda)
+  // Favoritar — usa o sistema compartilhado de favoritos (app.js),
+  // a mesma chave 'source_favoritos' usada nos cards de sale.html
   const botaoFavoritar = document.getElementById('btn-favoritar');
   if (botaoFavoritar) {
+    const rotuloFavoritar = document.getElementById('btn-favoritar-label');
+
+    const aplicarEstadoFavorito = (favoritado) => {
+      botaoFavoritar.setAttribute('aria-pressed', String(favoritado));
+      botaoFavoritar.classList.toggle('is-selected', favoritado);
+      rotuloFavoritar.textContent = favoritado ? 'Remover dos Favoritos' : 'Salvar nos Favoritos';
+    };
+
+    aplicarEstadoFavorito(produtoEstaFavoritado(produto.id)); // estado inicial, ao carregar a página
+
     botaoFavoritar.addEventListener('click', () => {
-      const jaFavoritado = botaoFavoritar.getAttribute('aria-pressed') === 'true';
-      botaoFavoritar.setAttribute('aria-pressed', String(!jaFavoritado));
-      botaoFavoritar.classList.toggle('is-selected', !jaFavoritado);
+      const novoEstado = alternarFavorito(produto.id);
+      aplicarEstadoFavorito(novoEstado);
     });
   }
 
-  // Cálculo de frete (simulado — sem integração com Correios/API ainda)
+  // Cálculo de frete (simulado — mesma função de carrinho.js,
+  // ver calcularOpcoesDeFrete em app.js)
   const formularioFrete = document.getElementById('shipping-form');
   if (formularioFrete) {
     formularioFrete.addEventListener('submit', (evento) => {
       evento.preventDefault();
 
       const cep = document.getElementById('shipping-cep').value.trim();
-      const cepValido = /^\d{5}-?\d{3}$/.test(cep);
+      const opcoes = calcularOpcoesDeFrete(cep);
       const resultado = document.getElementById('shipping-result');
 
-      if (!cepValido) {
+      if (!opcoes) {
         alert('Digite um CEP válido, no formato 00000-000.');
         return;
       }
 
       resultado.hidden = false;
-      resultado.innerHTML = `
-        <div class="product-shipping-option">
-          <span>PAC</span>
-          <span>${formatarPreco(19.9)} · até 7 dias úteis</span>
-        </div>
-        <div class="product-shipping-option">
-          <span>SEDEX</span>
-          <span>${formatarPreco(34.9)} · até 2 dias úteis</span>
-        </div>
-      `;
+      resultado.innerHTML = criarOpcoesFreteHtml(opcoes, null);
     });
   }
 

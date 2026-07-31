@@ -19,12 +19,10 @@ const CUPONS_VALIDOS = {
   BEMVINDO15: 0.15,
 };
 
-const VALOR_FRETE_PADRAO = 9.9;
-const PRAZO_FRETE_DIAS = '5 a 8 dias úteis';
 const DESCONTO_PIX = 10.0;
 
 let cupomAplicado = null; // string do código, ou null
-let freteCalculado = false; // só entra no total depois do CEP calculado
+let freteSelecionado = null; // objeto { id, nome, valor, prazo } — vem de OPCOES_FRETE (app.js), ou null
 let etapaAtual = 1; // 1 = Carrinho, 2 = Identificação, 3 = Pagamento, 4 = Sucesso
 let metodoPagamentoSelecionado = 'cartao'; // 'cartao' ou 'pix'
 
@@ -58,7 +56,7 @@ function calcularDesconto(subtotal) {
 }
 
 function calcularFrete() {
-  return freteCalculado ? VALOR_FRETE_PADRAO : 0;
+  return freteSelecionado ? freteSelecionado.valor : 0;
 }
 
 /* ------------------------------------------------------------------
@@ -154,8 +152,8 @@ function criarResumoHtml(itens) {
       </div>
 
       <div class="cart-resumo__linha">
-        <span>Frete</span>
-        <span>${freteCalculado ? formatarPreco(frete) : 'A calcular'}</span>
+        <span>Frete${freteSelecionado ? ` (${freteSelecionado.nome})` : ''}</span>
+        <span>${freteSelecionado ? formatarPreco(frete) : 'A calcular'}</span>
       </div>
 
       <div class="cart-resumo__linha cart-resumo__linha--total">
@@ -255,24 +253,28 @@ function configurarEventosDaEtapaCarrinho() {
     });
   });
 
-  // Cálculo de frete (simulado — mesma lógica de produto.js)
+  // Cálculo de frete (simulado — EXATAMENTE a mesma função de
+  // produto.js: calcularOpcoesDeFrete, em app.js). Aqui, diferente
+  // de produto.html, a escolha de fato entra no total da compra —
+  // por isso os radios de opção têm um listener próprio.
   const formularioFrete = document.getElementById('shipping-form');
   if (formularioFrete) {
     formularioFrete.addEventListener('submit', (evento) => {
       evento.preventDefault();
 
       const cep = document.getElementById('shipping-cep').value.trim();
-      const cepValido = /^\d{5}-?\d{3}$/.test(cep);
+      const opcoes = calcularOpcoesDeFrete(cep);
       const resultado = document.getElementById('shipping-result');
 
-      if (!cepValido) {
+      if (!opcoes) {
         alert('Digite um CEP válido, no formato 00000-000.');
         return;
       }
 
-      freteCalculado = true;
+      freteSelecionado = opcoes[0]; // pré-seleciona a primeira opção (PAC)
       resultado.hidden = false;
-      resultado.textContent = `Entrega estimada em ${PRAZO_FRETE_DIAS} — ${formatarPreco(VALOR_FRETE_PADRAO)}`;
+      resultado.innerHTML = criarOpcoesFreteHtml(opcoes, freteSelecionado.id);
+      configurarEventosDasOpcoesDeFrete(opcoes);
 
       const itens = obterItensCarrinhoComDados();
       document.querySelector('.cart-resumo').outerHTML = criarResumoHtml(itens);
@@ -306,6 +308,23 @@ function configurarEventosDaEtapaCarrinho() {
   }
 
   configurarEventoContinuar();
+}
+
+/**
+ * Liga os radios de PAC/SEDEX renderizados por criarOpcoesFreteHtml
+ * (app.js) — trocar de opção atualiza freteSelecionado e recalcula
+ * o resumo na hora, sem precisar re-submeter o formulário de CEP.
+ */
+function configurarEventosDasOpcoesDeFrete(opcoes) {
+  document.querySelectorAll('input[name="opcao-frete"]').forEach((radio) => {
+    radio.addEventListener('change', () => {
+      freteSelecionado = opcoes.find((opcao) => opcao.id === radio.value) || null;
+
+      const itens = obterItensCarrinhoComDados();
+      document.querySelector('.cart-resumo').outerHTML = criarResumoHtml(itens);
+      configurarEventoContinuar();
+    });
+  });
 }
 
 function configurarEventoContinuar() {
@@ -434,7 +453,7 @@ function criarResumoPagamentoHtml(itens) {
       </div>
 
       <div class="cart-resumo__linha">
-        <span>Frete</span>
+        <span>Frete${freteSelecionado ? ` (${freteSelecionado.nome})` : ''}</span>
         <span>${formatarPreco(frete)}</span>
       </div>
 

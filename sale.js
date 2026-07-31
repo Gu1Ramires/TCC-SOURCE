@@ -26,7 +26,7 @@ const PRODUTOS = [
     preco: 180.0,
     corPrincipal: '#111111',
     coresDisponiveis: ['#111111', '#1c3f8f', '#4a2e1d', '#f2ede2'],
-    tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+    tamanhosDisponiveis: ['PP', 'P', 'M', 'G', 'GG'],
     descricao: 'Camiseta boxy com caimento reto, tecido encorpado e estampa lateral assinatura SOURCE. Peça-chave do Drop 1, pensada pra transitar entre a rua e o dia a dia sem perder identidade.',
     destaques: ['Caimento boxy/oversized', 'Estampa lateral em relevo', 'Gola reforçada dupla costura'],
     especificacoes: { tecido: 'Algodão penteado 30.1', composicao: '100% algodão', caimento: 'Boxy / Oversized' },
@@ -41,7 +41,7 @@ const PRODUTOS = [
     preco: 180.0,
     corPrincipal: '#1c3f8f',
     coresDisponiveis: ['#111111', '#1c3f8f', '#4a2e1d', '#f2ede2'],
-    tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+    tamanhosDisponiveis: ['PP', 'P', 'M', 'G', 'GG'],
     descricao: 'Camiseta boxy com caimento reto, tecido encorpado e estampa lateral assinatura SOURCE. Peça-chave do Drop 1, pensada pra transitar entre a rua e o dia a dia sem perder identidade.',
     destaques: ['Caimento boxy/oversized', 'Estampa lateral em relevo', 'Gola reforçada dupla costura'],
     especificacoes: { tecido: 'Algodão penteado 30.1', composicao: '100% algodão', caimento: 'Boxy / Oversized' },
@@ -56,7 +56,7 @@ const PRODUTOS = [
     preco: 180.0,
     corPrincipal: '#4a2e1d',
     coresDisponiveis: ['#111111', '#1c3f8f', '#4a2e1d', '#f2ede2'],
-    tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+    tamanhosDisponiveis: ['PP', 'P', 'M', 'G', 'GG'],
     descricao: 'Camiseta boxy com caimento reto, tecido encorpado e estampa lateral assinatura SOURCE. Um tom mais sóbrio da mesma modelagem, com pegada Realeza.',
     destaques: ['Caimento boxy/oversized', 'Estampa lateral em relevo', 'Gola reforçada dupla costura'],
     especificacoes: { tecido: 'Algodão penteado 30.1', composicao: '100% algodão', caimento: 'Boxy / Oversized' },
@@ -71,7 +71,7 @@ const PRODUTOS = [
     preco: 180.0,
     corPrincipal: '#f2ede2',
     coresDisponiveis: ['#111111', '#1c3f8f', '#4a2e1d', '#f2ede2'],
-    tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+    tamanhosDisponiveis: ['PP', 'P', 'M', 'G', 'GG'],
     descricao: 'Camiseta boxy com caimento reto, tecido encorpado e estampa lateral assinatura SOURCE. Tom neutro, versátil, com pegada Realeza.',
     destaques: ['Caimento boxy/oversized', 'Estampa lateral em relevo', 'Gola reforçada dupla costura'],
     especificacoes: { tecido: 'Algodão penteado 30.1', composicao: '100% algodão', caimento: 'Boxy / Oversized' },
@@ -86,7 +86,7 @@ const PRODUTOS = [
     preco: 320.0,
     corPrincipal: '#111111',
     coresDisponiveis: ['#111111'],
-    tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+    tamanhosDisponiveis: ['PP', 'P', 'M', 'G', 'GG'],
     descricao: 'Moletom oversized em moletinho flanelado, capuz forrado e bolso canguru reforçado. Peça de inverno pensada pra dar volume sem perder o caimento.',
     destaques: ['Capuz forrado', 'Bolso canguru reforçado', 'Punho e barra em ribana'],
     especificacoes: { tecido: 'Moletom flanelado 400g', composicao: '80% algodão / 20% poliéster', caimento: 'Oversized' },
@@ -101,7 +101,7 @@ const PRODUTOS = [
     preco: 340.0,
     corPrincipal: '#f2ede2',
     coresDisponiveis: ['#f2ede2', '#7a1f2b'],
-    tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+    tamanhosDisponiveis: ['PP', 'P', 'M', 'G', 'GG'],
     descricao: 'Versão Realeza do moletom, com tecido mais encorpado e acabamento premium — prova de que conforto e alfaiataria minimalista podem conviver na mesma peça.',
     destaques: ['Acabamento premium', 'Corte reto elegante', 'Tecido de gramatura alta'],
     especificacoes: { tecido: 'Moletom peruano 450g', composicao: '100% algodão pima', caimento: 'Reto / Alfaiataria' },
@@ -116,7 +116,7 @@ const PRODUTOS = [
     preco: 280.0,
     corPrincipal: '#111111',
     coresDisponiveis: ['#111111'],
-    tamanhosDisponiveis: ['PP', 'M', 'G', 'GG'],
+    tamanhosDisponiveis: ['PP', 'P', 'M', 'G', 'GG'],
     descricao: 'Calça cargo com bolsos utilitários e cordão de ajuste na barra. Feita pra rua, com espaço de sobra e caimento reto.',
     destaques: ['Bolsos cargo laterais', 'Cordão de ajuste na barra', 'Cintura com elástico + cadarço'],
     especificacoes: { tecido: 'Sarja pesada', composicao: '98% algodão / 2% elastano', caimento: 'Reto / Cargo' },
@@ -219,8 +219,28 @@ const NOMES_LADO = {
   realeza: 'Realeza',
 };
 
+/* TROCA FUTURA: aponte estes caminhos pros arquivos reais das logos
+   de identidade visual (Quebrada / Realeza) assim que estiverem
+   prontos. Até lá, se o arquivo não existir, o navegador mostra o
+   texto do atributo alt no lugar da imagem quebrada. */
+const LOGOS_LADO = {
+  quebrada: 'assets/logos/logo-quebrada.png',
+  realeza: 'assets/logos/logo-realeza.png',
+};
+
+/**
+ * Selo de identidade do produto — usado tanto no card do catálogo
+ * (sale.js) quanto no detalhe do produto (produto.js, que reaproveita
+ * esta mesma função). Antes era um texto ("Quebrada"/"Realeza"); agora
+ * é a logo de cada lado, mantendo a mesma "pílula" de fundo colorido
+ * como moldura.
+ */
 function criarSeloLado(lado) {
-  return `<span class="product-card__lado product-card__lado--${lado}">${NOMES_LADO[lado]}</span>`;
+  return `
+    <span class="product-card__lado product-card__lado--${lado}">
+      <img src="${LOGOS_LADO[lado]}" alt="${NOMES_LADO[lado]}" class="product-card__lado-logo">
+    </span>
+  `;
 }
 
 /**
@@ -233,11 +253,25 @@ function criarCardProduto(produto) {
     .map((tamanho) => `<span class="product-card__size">${tamanho}</span>`)
     .join('');
 
+  const estaFavoritado = produtoEstaFavoritado(produto.id);
+
   return `
     <a class="product-card" href="produto.html?id=${produto.id}">
       <div class="product-card__image-wrapper" role="img" aria-label="${produto.nome}">
         ${criarSeloLado(produto.lado)}
         ${criarIconeProduto(produto.tipo, produto.corPrincipal)}
+
+        <button
+          type="button"
+          class="product-card__fav-btn ${estaFavoritado ? 'is-favorito' : ''}"
+          data-id="${produto.id}"
+          aria-pressed="${estaFavoritado}"
+          aria-label="${estaFavoritado ? 'Remover' : 'Salvar'} ${produto.nome} dos favoritos"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M12 21s-7-4.35-9.5-8.5C.7 8.9 2.2 5 6 5c2 0 3.3 1 4 2.2C10.7 6 12 5 14 5c3.8 0 5.3 3.9 3.5 7.5C19 16.65 12 21 12 21z"></path>
+          </svg>
+        </button>
       </div>
       <div class="product-card__info">
         <p class="product-card__title">${produto.colecao} — ${produto.nome}</p>
@@ -250,6 +284,27 @@ function criarCardProduto(produto) {
 }
 
 /**
+ * O botão de favoritar fica DENTRO do <a> do card (pra ficar em cima
+ * da imagem, no lugar certo do design) — por isso todo clique nele
+ * precisa de stopPropagation, senão o clique "vaza" pro link e navega
+ * pra produto.html sem querer.
+ */
+function configurarBotoesFavoritar() {
+  document.querySelectorAll('.product-card__fav-btn').forEach((botao) => {
+    botao.addEventListener('click', (evento) => {
+      evento.preventDefault();
+      evento.stopPropagation();
+
+      const produtoId = botao.dataset.id;
+      const novoEstado = alternarFavorito(produtoId);
+
+      botao.classList.toggle('is-favorito', novoEstado);
+      botao.setAttribute('aria-pressed', String(novoEstado));
+    });
+  });
+}
+
+/**
  * Renderiza a lista de produtos dentro do .product-grid e atualiza
  * o contador de itens da barra de filtros.
  */
@@ -258,6 +313,7 @@ function renderizarProdutos(lista, termoBusca) {
   if (!grid) return; // esta página não tem catálogo
 
   grid.innerHTML = lista.map(criarCardProduto).join('');
+  configurarBotoesFavoritar(); // reata os listeners, já que o HTML acabou de renascer
 
   const contador = document.getElementById('catalog-count');
   if (contador) {
