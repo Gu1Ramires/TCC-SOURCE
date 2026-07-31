@@ -122,6 +122,7 @@ const CONTEUDO_AUTH = {
     dividerLinkText: 'Crie uma aqui',
     toggleBtnLabel: 'Cadastrar-se',
     mostrarConfirmarSenha: false,
+    mostrarAceiteTermos: false,
   },
   cadastro: {
     submitLabel: 'Criar Conta',
@@ -129,6 +130,7 @@ const CONTEUDO_AUTH = {
     dividerLinkText: 'Entrar',
     toggleBtnLabel: 'Entrar',
     mostrarConfirmarSenha: true,
+    mostrarAceiteTermos: true,
   },
 };
 
@@ -142,6 +144,7 @@ function atualizarUIAuth() {
   document.getElementById('auth-toggle-link').textContent = conteudo.dividerLinkText;
   document.getElementById('auth-toggle-btn').textContent = conteudo.toggleBtnLabel;
   document.getElementById('auth-confirm-password').hidden = !conteudo.mostrarConfirmarSenha;
+  document.getElementById('auth-termos-wrapper').hidden = !conteudo.mostrarAceiteTermos;
 }
 
 function alternarModoAuth() {
@@ -219,6 +222,15 @@ function tratarSubmitAuth(evento) {
 
     if (senha !== confirmarSenha) {
       alert('As senhas não coincidem. Confira e tente novamente.');
+      return;
+    }
+
+    // Aceite obrigatório dos Termos de Uso (LGPD) — o <form> tem
+    // novalidate, então o "required" do checkbox é só semântico;
+    // quem garante a obrigatoriedade de verdade é esta checagem.
+    const aceitouTermos = document.getElementById('auth-aceite-termos').checked;
+    if (!aceitouTermos) {
+      alert('Você precisa concordar com os Termos de Uso para criar sua conta.');
       return;
     }
 
